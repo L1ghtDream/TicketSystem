@@ -6,7 +6,7 @@ import dev.lightdream.databasemanager.dto.DatabaseEntry;
 public class Ticket extends DatabaseEntry {
 
     public String type;
-    public String id;
+    public Long id;
 
     public Ticket(DatabaseMain main) {
         super(main);

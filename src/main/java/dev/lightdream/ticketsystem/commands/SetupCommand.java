@@ -17,7 +17,7 @@ import java.util.List;
 public class SetupCommand extends DiscordCommand {
 
     public SetupCommand(JDAExtensionMain main) {
-        super(main, "setup", "Sends the necessary messages", Permission.ADMINISTRATOR, "");
+        super(main, "setup", "Sends the necessary messages", Permission.ADMINISTRATOR, "", true);
     }
 
     @Override

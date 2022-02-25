@@ -1,5 +1,6 @@
 package dev.lightdream.ticketsystem.dto;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,6 +9,8 @@ public class Config {
 
     public boolean debug = true;
     public Long ticketsChanel = 946527951233622077L;
+    public Long banTicketsChanel = 946837276078510090L;
+
     public List<TicketType> ticketTypes = Arrays.asList(
             new TicketType("\uD83D\uDCDC General", "general", 946528774084755477L, Arrays.asList(
                     946529041505193984L
@@ -22,5 +25,9 @@ public class Config {
                     946529041505193984L
             ))
     );
+
+    public TicketType banTicket = new TicketType("\uD83D\uDD13 Cerere unban", "unban-request", 946825068963577926L, new ArrayList<>());
+
+    public Long bannedRank =946812771037741086L;
 
 }

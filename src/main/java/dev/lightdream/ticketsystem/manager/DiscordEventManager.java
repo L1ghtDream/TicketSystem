@@ -51,6 +51,12 @@ public class DiscordEventManager extends ListenerAdapter {
                 if (event.getMember() == null) {
                     return;
                 }
+
+                Main.instance.jdaConfig.ticketGreeting
+                        .parse("name", event.getUser().getName())
+                        .parse("avatar", event.getUser().getAvatarUrl())
+                        .buildMessageAction(textChannel).queue();
+
                 textChannel.putPermissionOverride(event.getMember()).setAllow(
                         Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                         Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
