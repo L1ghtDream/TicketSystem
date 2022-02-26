@@ -160,4 +160,14 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "Added %name% to this ticket."
     );
 
+    public JdaEmbed cannotBan = JdaEmbed.red(
+            "Ban",
+            "I can not ban this use because he has a higher rank then me."
+    );
+
+    public JdaEmbed cannotUnban = JdaEmbed.red(
+            "Ban",
+            "I can not unban this use because he has a higher rank then me."
+    );
+
 }

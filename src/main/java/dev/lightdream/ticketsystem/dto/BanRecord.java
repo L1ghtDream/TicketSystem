@@ -8,6 +8,7 @@ import dev.lightdream.ticketsystem.Main;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,7 +72,13 @@ public class BanRecord extends DatabaseEntry {
                             return;
                         }
 
-                        guild.addRoleToMember(member, role).queue();
+                        try {
+                            guild.addRoleToMember(member, role).queue();
+                        } catch (HierarchyException e) {
+                            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.cannotUnban.build().build()).queue();
+                            return;
+                        }
+
                         roles1.getAndIncrement();
                     });
 

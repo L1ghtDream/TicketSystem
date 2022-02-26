@@ -6,6 +6,7 @@ import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +54,18 @@ public class BanCommand extends DiscordCommand {
 
                     member.getRoles().forEach(role -> ranks.add(role.getIdLong()));
 
-                    ranks.forEach(rank -> {
+                    for (Long rank : ranks) {
                         Role role = textChannel.getGuild().getRoleById(rank);
                         if (role == null) {
+                            continue;
+                        }
+                        try {
+                            guild.removeRoleFromMember(member, role).queue();
+                        } catch (HierarchyException e) {
+                            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.cannotBan.build().build()).queue();
                             return;
                         }
-                        guild.removeRoleFromMember(member, role).queue();
-                    });
+                    }
 
                     Role role = guild.getRoleById(Main.instance.config.bannedRank);
 
