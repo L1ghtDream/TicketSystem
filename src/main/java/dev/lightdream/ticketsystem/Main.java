@@ -14,10 +14,7 @@ import dev.lightdream.jdaextension.managers.DiscordCommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
 import dev.lightdream.logger.Logger;
-import dev.lightdream.ticketsystem.commands.BanCommand;
-import dev.lightdream.ticketsystem.commands.CloseCommand;
-import dev.lightdream.ticketsystem.commands.SetupCommand;
-import dev.lightdream.ticketsystem.commands.UnbanCommand;
+import dev.lightdream.ticketsystem.commands.*;
 import dev.lightdream.ticketsystem.dto.Config;
 import dev.lightdream.ticketsystem.dto.JDAConfig;
 import dev.lightdream.ticketsystem.dto.Lang;
@@ -71,6 +68,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
                 new CloseCommand(this),
                 new BanCommand(this),
                 new UnbanCommand(this),
+                new AddCommand(this),
                 new SetupCommand(this)
         ));
         discordEventManager = new DiscordEventManager(this);

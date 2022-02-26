@@ -18,6 +18,10 @@
             <id>lightdream-repo</id>
             <url>https://repo.lightdream.dev/repository/LightDream-API/</url>
         </repository>
+        <repository>
+            <id>mysql-driver</id>
+            <url>https://mvnrepository.com/artifact/mysql/mysql-connector-java</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -31,6 +35,46 @@
             <artifactId>DatabaseManager</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.28</version>
+        </dependency>
+
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>dev.lightdream.ticketsystem.Executor</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
     
 </project>

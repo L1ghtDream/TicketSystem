@@ -155,4 +155,9 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "An error occurred while performing this action. Please contact the author in regards to this."
     );
 
+    public JdaEmbed addedToTicket = JdaEmbed.green(
+            "Tickets",
+            "Added %name% to this ticket."
+    );
+
 }
