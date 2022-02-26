@@ -65,6 +65,8 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
                 new StatsCommand(this),
                 new CloseCommand(),
                 new BanCommand(),
+                new CheckBanCommand(),
+                new HistoryCommand(),
                 new UnbanCommand(),
                 new AddCommand(),
                 new TicketsCommand(),
