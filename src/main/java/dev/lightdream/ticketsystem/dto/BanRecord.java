@@ -3,7 +3,6 @@ package dev.lightdream.ticketsystem.dto;
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
 import dev.lightdream.databasemanager.dto.DatabaseEntry;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
 import net.dv8tion.jda.api.entities.Guild;
@@ -11,6 +10,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @DatabaseTable(table = "bans")
 public class BanRecord extends DatabaseEntry {
@@ -51,11 +51,13 @@ public class BanRecord extends DatabaseEntry {
                     Role bannedRole = guild.getRoleById(Main.instance.config.bannedRank);
 
                     if (bannedRole != null) {
-                        guild.removeRoleFromMember(member, bannedRole)
-                                .queue();
+                        guild.removeRoleFromMember(member, bannedRole).queue();
                     } else {
-                        Logger.error("The banned role is not valid");
+                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidUser.build().build()).queue();
+                        return;
                     }
+
+                    AtomicInteger roles1 = new AtomicInteger();
 
                     ranks.forEach(rank -> {
                         Role role = guild.getRoleById(rank);
@@ -66,9 +68,15 @@ public class BanRecord extends DatabaseEntry {
                         }
 
                         guild.addRoleToMember(member, role).queue();
+                        roles1.getAndIncrement();
                     });
 
-                    textChannel.sendMessage("Restored ranks").queue();
+                    textChannel.sendMessageEmbeds(Main.instance.jdaConfig.unBanned
+                            .parse("name", member.getEffectiveName())
+                            .parse("roles_1", String.valueOf(roles1.get()))
+                            .parse("roles_2", String.valueOf(ranks.size()))
+                            .build().build()
+                    ).queue();
                 });
 
         active = false;

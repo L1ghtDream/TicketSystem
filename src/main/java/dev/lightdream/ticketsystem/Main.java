@@ -9,6 +9,7 @@ import dev.lightdream.filemanager.FileManagerMain;
 import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.commands.HelpCommand;
 import dev.lightdream.jdaextension.commands.commands.StatsCommand;
+import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.jdaextension.managers.DiscordCommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
@@ -128,5 +129,15 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     @Override
     public DiscordCommandManager getDiscordCommandManager() {
         return discordCommandManager;
+    }
+
+    @Override
+    public String getPrefix() {
+        return config.prefix;
+    }
+
+    @Override
+    public JdaEmbed getHelpEmbed() {
+        return jdaConfig.helpEmbed;
     }
 }

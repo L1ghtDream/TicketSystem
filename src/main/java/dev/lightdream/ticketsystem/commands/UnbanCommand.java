@@ -14,7 +14,7 @@ import java.util.List;
 
 public class UnbanCommand extends DiscordCommand {
     public UnbanCommand(JDAExtensionMain main) {
-        super(main, "unban", "description", Permission.BAN_MEMBERS, "[user_id]", true);
+        super(main, "unban", Main.instance.lang.unbanCommandDescription, Permission.BAN_MEMBERS, "[user_id]", true);
     }
 
     @Override
@@ -28,25 +28,19 @@ public class UnbanCommand extends DiscordCommand {
         try {
             id = Long.parseLong(args.get(0));
         } catch (Exception e) {
-            System.out.println("NFE"); //todo
+            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
             return;
         }
 
         BanRecord ban = Main.instance.databaseManager.getBan(id);
 
         if (ban == null) {
-            textChannel.sendMessage("The user is not banned")
-                    .queue();
+            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notBanned.build().build()).queue();
             return;
         }
 
-        if (ban.unban(textChannel)) {
-
-            textChannel.sendMessage("User unbanned")
-                    .queue();
-        } else {
-            textChannel.sendMessage("The user is not banned")
-                    .queue();
+        if (!ban.unban(textChannel)) {
+            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notBanned.build().build()).queue();
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 public class SetupCommand extends DiscordCommand {
 
     public SetupCommand(JDAExtensionMain main) {
-        super(main, "setup", "Sends the necessary messages", Permission.ADMINISTRATOR, "", true);
+        super(main, "setup", Main.instance.lang.setupCommandDescription, Permission.ADMINISTRATOR, "", true);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class SetupCommand extends DiscordCommand {
                 embed.buttons.add(new Button(JDAButtonType.PRIMARY, ticketType.id, ticketType.name)));
         embed.buildMessageAction(Main.instance.bot.getTextChannelById(Main.instance.config.ticketsChanel)).queue();
 
-        textChannel.sendMessage("Setup finished").queue();
+        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.setupFinished.build().build()).queue();
     }
 
     @Override

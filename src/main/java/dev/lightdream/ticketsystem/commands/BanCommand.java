@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BanCommand extends DiscordCommand {
     public BanCommand(JDAExtensionMain main) {
-        super(main, "ban", "Bans user", Permission.BAN_MEMBERS, "[user_id] [reason]",true);
+        super(main, "ban", Main.instance.lang.banCommandDescription, Permission.BAN_MEMBERS, "[user_id] [reason]", true);
     }
 
     @Override
@@ -29,12 +29,12 @@ public class BanCommand extends DiscordCommand {
                     .forEach(word -> reason.append(word)
                             .append(" "));
         } catch (Exception e) {
-            textChannel.sendMessage(Main.instance.lang.invalidID).queue();
+            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
             return;
         }
 
-        if(Main.instance.databaseManager.getBan(id) != null){
-            textChannel.sendMessage("User is already banned").queue();
+        if (Main.instance.databaseManager.getBan(id) != null) {
+            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyBanned.build().build()).queue();
             return;
         }
 
@@ -45,40 +45,35 @@ public class BanCommand extends DiscordCommand {
                 .retrieveMemberById(id)
                 .queue(member -> {
                     if (member == null) {
-                        textChannel.sendMessage("This is not a valid user")
-                                .queue(); //todo
+                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidUser.build().build()).queue();
                         return;
                     }
 
                     Guild guild = textChannel.getGuild();
 
-                    member.getRoles()
-                            .forEach(role -> ranks.add(role.getIdLong()));
+                    member.getRoles().forEach(role -> ranks.add(role.getIdLong()));
 
                     ranks.forEach(rank -> {
-                        Role role = textChannel.getGuild()
-                                .getRoleById(rank);
+                        Role role = textChannel.getGuild().getRoleById(rank);
                         if (role == null) {
                             return;
                         }
-                        guild.removeRoleFromMember(member, role)
-                                .queue();
+                        guild.removeRoleFromMember(member, role).queue();
                     });
 
                     Role role = guild.getRoleById(Main.instance.config.bannedRank);
 
                     if (role == null) {
-                        textChannel.sendMessage("The banned role is invalid please check it")
-                                .queue();
+                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidBannedRole.build().build()).queue();
                         return;
                     }
 
-                    guild.addRoleToMember(member, role)
-                            .queue();
+                    guild.addRoleToMember(member, role).queue();
 
                     new BanRecord(id, ranks, reason.toString(), System.currentTimeMillis()).save();
-                    textChannel.sendMessage("User banned")
-                            .queue(); //todo
+                    textChannel.sendMessageEmbeds(Main.instance.jdaConfig.userBanned
+                                    .parse("name", member.getEffectiveName()).build().build())
+                            .queue();
                 });
     }
 
