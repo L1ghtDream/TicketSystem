@@ -25,7 +25,7 @@ public class BanCommand extends DiscordCommand {
         StringBuilder reason = new StringBuilder();
         try {
             id = Long.parseLong(args.get(0));
-            args.subList(1, args.size() - 1)
+            args.subList(1, args.size())
                     .forEach(word -> reason.append(word)
                             .append(" "));
         } catch (Exception e) {
@@ -70,7 +70,7 @@ public class BanCommand extends DiscordCommand {
 
                     guild.addRoleToMember(member, role).queue();
 
-                    new BanRecord(id, ranks, reason.toString(), System.currentTimeMillis()).save();
+                    new BanRecord(id, sender.getIdLong(), ranks, reason.toString(), System.currentTimeMillis()).save();
                     textChannel.sendMessageEmbeds(Main.instance.jdaConfig.userBanned
                                     .parse("name", member.getEffectiveName()).build().build())
                             .queue();

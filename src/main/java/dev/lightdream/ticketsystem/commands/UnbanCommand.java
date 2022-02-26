@@ -4,6 +4,7 @@ import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
+import dev.lightdream.ticketsystem.manager.BanManager;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -32,16 +33,7 @@ public class UnbanCommand extends DiscordCommand {
             return;
         }
 
-        BanRecord ban = Main.instance.databaseManager.getBan(id);
-
-        if (ban == null) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notBanned.build().build()).queue();
-            return;
-        }
-
-        if (!ban.unban(textChannel)) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notBanned.build().build()).queue();
-        }
+        BanManager.unban(id, textChannel);
     }
 
     @Override

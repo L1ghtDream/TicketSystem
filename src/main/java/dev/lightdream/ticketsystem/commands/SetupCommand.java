@@ -22,10 +22,16 @@ public class SetupCommand extends DiscordCommand {
 
     @Override
     public void execute(Member member, TextChannel textChannel, List<String> list) {
-        JdaEmbed embed = Main.instance.jdaConfig.ticket.clone();
+        JdaEmbed ticket = Main.instance.jdaConfig.ticket.clone();
         Main.instance.config.ticketTypes.forEach(ticketType ->
-                embed.buttons.add(new Button(JDAButtonType.PRIMARY, ticketType.id, ticketType.name)));
-        embed.buildMessageAction(Main.instance.bot.getTextChannelById(Main.instance.config.ticketsChanel)).queue();
+                ticket.buttons.add(new Button(JDAButtonType.PRIMARY, ticketType.id, ticketType.name)));
+
+        ticket.buildMessageAction(Main.instance.bot.getTextChannelById(Main.instance.config.ticketsChanel)).queue();
+
+        JdaEmbed banTicket = Main.instance.jdaConfig.unbanTicket.clone();
+        banTicket.buttons.add(new Button(JDAButtonType.PRIMARY, Main.instance.config.unbanTicket.id, Main.instance.config.unbanTicket.name));
+
+        banTicket.buildMessageAction(Main.instance.bot.getTextChannelById(Main.instance.config.unbanTicketsChanel)).queue();
 
         textChannel.sendMessageEmbeds(Main.instance.jdaConfig.setupFinished.build().build()).queue();
     }

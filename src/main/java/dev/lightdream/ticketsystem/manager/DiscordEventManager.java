@@ -2,83 +2,122 @@ package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
+import dev.lightdream.ticketsystem.dto.BanRecord;
+import dev.lightdream.ticketsystem.dto.Ticket;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.GuildChannel;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class DiscordEventManager extends ListenerAdapter {
 
-    private final Main main;
-
     public DiscordEventManager(Main plugin) {
-        this.main = plugin;
         plugin.bot.addEventListener(this);
     }
 
     @Override
     public void onButtonClick(ButtonClickEvent event) {
-        Debugger.info(event.getComponentId());
-
         String id = event.getComponentId();
-        Main.instance.config.ticketTypes.forEach(ticketType -> {
-            if (!ticketType.id.equals(id)) {
-                return;
+        Debugger.info(id);
+
+        Conditions:
+        if (id.equalsIgnoreCase("close-ticket")) {
+            TicketManager.closeTicket(event.getTextChannel());
+        } else if (id.equalsIgnoreCase("manager")) {
+            MessageChannel channel = event.getChannel();
+
+            Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
+            if (ticket == null) {
+                break Conditions;
             }
 
-            if (Main.instance.bot.getCategoryById(ticketType.categoryID) == null) {
-                return;
+            if (ticket.pingedManager) {
+                channel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyPingedManager.build().build()).queue();
+                break Conditions;
             }
 
-            //noinspection ConstantConditions
-            for (GuildChannel channel : Main.instance.bot.getCategoryById(ticketType.categoryID).getChannels()) {
-                if (channel.getName().equalsIgnoreCase(event.getUser().getName())) {
-                    if (Main.instance.bot.getTextChannelById(channel.getId()) == null) {
-                        return;
-                    }
-                    //noinspection ConstantConditions
-                    Main.instance.bot.getTextChannelById(channel.getId()).sendMessage("<@" + event.getUser().getId() + ">").queue(message ->
-                            message.delete().queue());
-                    return;
-                }
+            channel.sendMessage("<@&" + Main.instance.config.managerPingRank + ">").queue(message ->
+                    message.delete().queue());
+
+            ticket.pingedManager = true;
+            ticket.save();
+        } else if (id.equals(Main.instance.config.unbanTicket.id)) {
+            User user = event.getUser();
+
+            BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
+
+            if (ban == null) {
+                //todo possibly private chanel message
+                break Conditions;
             }
-            if (event.getGuild() == null) {
-                return;
-            }
 
-            event.getGuild().createTextChannel(event.getUser().getName(),
-                    Main.instance.bot.getCategoryById(ticketType.categoryID)).queue(textChannel -> {
-                if (event.getMember() == null) {
-                    return;
-                }
+            TicketManager.createTicket(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, textChannel -> {
+                String avatar = user.getAvatarUrl() == null ?
+                        "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3" :
+                        user.getAvatarUrl();
 
-                Main.instance.jdaConfig.ticketGreeting
-                        .parse("name", event.getUser().getName())
-                        .parse("avatar", event.getUser().getAvatarUrl())
-                        .buildMessageAction(textChannel).queue();
+                Main.instance.jdaConfig.unbanTicketGreeting
+                        .parse("name", user.getName())
+                        .parse("avatar", avatar)
+                        .buildMessageAction((MessageChannel) textChannel).queue();
 
-                textChannel.putPermissionOverride(event.getMember()).setAllow(
-                        Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
-                        Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
-                ).queue();
+                Main.instance.bot.retrieveUserById(ban.bannedBy).queue(bannedBy ->
+                        ((MessageChannel) textChannel).sendMessageEmbeds(Main.instance.jdaConfig.unbanDetails
+                                .parse("name", user.getName())
+                                .parse("id", user.getId())
+                                .parse("banned_by_name", bannedBy.getName())
+                                .parse("banned_by_id", String.valueOf(bannedBy))
+                                .parse("reason", ban.reason)
+                                .build().build()).queue());
 
-                ticketType.associatedRanks.forEach(rank -> {
-                    if (Main.instance.bot.getRoleById(rank) == null) {
-                        return;
-                    }
-                    //noinspection ConstantConditions
-                    textChannel.putPermissionOverride(Main.instance.bot.getRoleById(rank)).setAllow(
-                            Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
-                            Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
-                    ).queue();
-                });
-
-                textChannel.sendMessage("<@" + event.getUser().getId() + ">").queue(message ->
-                        message.delete().queue());
+                return null;
             });
-        });
+        } else if (id.equalsIgnoreCase("unban")) {
+            Member member = event.getMember();
+            TextChannel channel = event.getTextChannel();
+
+            if (member == null || !member.hasPermission(Permission.BAN_MEMBERS)) {
+                channel.sendMessageEmbeds(Main.instance.jdaConfig.notAllowed.build().build()).queue();
+                break Conditions;
+            }
+
+            Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
+
+            if (ticket == null) {
+                channel.sendMessageEmbeds(Main.instance.jdaConfig.error.build().build()).queue();
+                return;
+            }
+
+            BanManager.unban(ticket.creatorID, channel);
+        } else {
+
+            Main.instance.config.ticketTypes.forEach(ticketType -> {
+                if (!ticketType.id.equals(id)) {
+                    return;
+                }
+
+                TicketManager.createTicket(event.getGuild(), event.getMember(), ticketType, textChannel -> {
+                    User user = event.getUser();
+
+                    String avatar = user.getAvatarUrl() == null ?
+                            "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3" :
+                            user.getAvatarUrl();
+
+                    Main.instance.jdaConfig.ticketGreeting
+                            .parse("name", user.getName())
+                            .parse("avatar", avatar)
+                            .buildMessageAction((MessageChannel) textChannel).queue();
+                    return null;
+                });
+            });
+        }
 
         event.deferEdit().queue();
 
     }
+
+
 }

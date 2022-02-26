@@ -17,6 +17,8 @@ public class BanRecord extends DatabaseEntry {
 
     @DatabaseField(columnName = "user_id")
     public Long user;
+    @DatabaseField(columnName = "banned_by")
+    public Long bannedBy;
     @DatabaseField(columnName = "ranks")
     public List<Long> ranks;
     @DatabaseField(columnName = "reason")
@@ -26,9 +28,10 @@ public class BanRecord extends DatabaseEntry {
     @DatabaseField(columnName = "active")
     public boolean active;
 
-    public BanRecord(Long user, List<Long> ranks, String reason, Long timestamp) {
+    public BanRecord(Long user, Long bannedBy, List<Long> ranks, String reason, Long timestamp) {
         super(Main.instance);
         this.user = user;
+        this.bannedBy = bannedBy;
         this.ranks = ranks;
         this.reason = reason;
         this.timestamp = timestamp;

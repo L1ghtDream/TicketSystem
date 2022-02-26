@@ -17,10 +17,24 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             0,
             "Create Ticket",
             "",
-            "**Selete the ticket type that you want to create**",
+            "**Select the ticket type that you want to create**",
             Arrays.asList(new JdaField("Warnings!",
                     "We do not solve any problems related to any lost or stolen items!\n" +
                             "All the complains are made on https://original.gg/complain!",
+                    true)),
+            new ArrayList<>()
+    );
+
+    public JdaEmbed unbanTicket = new JdaEmbed(
+            0,
+            0,
+            0,
+            "Create Unban Ticket",
+            "",
+            "",
+            Arrays.asList(new JdaField("Warnings!",
+                    "If you have been banned for advertising you will not be able to be unbanned!\n" +
+                            "If you have been banned as a result of your account being compromised you will need to provide proof that you have secured your account",
                     true)),
             new ArrayList<>()
     );
@@ -40,7 +54,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Inchide ticket-ul"))
     );
 
-    public JdaEmbed banTicketGreeting = new JdaEmbed(
+    public JdaEmbed unbanTicketGreeting = new JdaEmbed(
             0,
             255,
             0,
@@ -49,16 +63,18 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "Please state why you thing you need to be unbanned.\n" +
                     "The staff member that have banned you have been notified.",
             new ArrayList<>(),
-            Arrays.asList(new Button(JDAButtonType.DANGER, "manager", "\uD83C\uDF93 Manager"),
-                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Inchide ticket-ul"))
+            Arrays.asList(
+                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Inchide ticket-ul"),
+                    new Button(JDAButtonType.PRIMARY, "unban", "\uD83D\uDD13 Unban")
+            )
     );
 
-    public JdaEmbed banDetails = new JdaEmbed(
+    public JdaEmbed unbanDetails = new JdaEmbed(
             255,
             0,
             0,
             "%name%",
-            "%avatar%",
+            "",
             "Username: %name%\n" +
                     "ID: %id%\n" +
                     "Banned By: %banned_by_name%\n" +
@@ -101,12 +117,8 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
     public JdaEmbed helpEmbed = JdaEmbed.black(
             "Help",
             "+help\n" +
-                    "+link [username]\n" +
-                    "+unlink <username>\n" +
-                    "+changePassword <username> [newPassword] - In DMs\n" +
-                    "+accounts <discordID>\n" +
-                    "+stats\n" +
-                    "+unregister <discordID>\n" +
+                    "+ban <user_id> <reason>\n" +
+                    "+unban <user_id>\n" +
                     "\n" +
                     "[] - Mandatory arguments\n"
                     + "<> - Optional / Contextual arguments"
@@ -127,5 +139,20 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "User %name% is not unbanned. %roles_1%/%roles_2% roles have been restored"
     );
 
+
+    public JdaEmbed notTicket = JdaEmbed.red(
+            "Ticket",
+            "This chanel is not a valid ticket channel"
+    );
+
+    public JdaEmbed alreadyPingedManager = JdaEmbed.red(
+            "Ticket",
+            "You have already pinged the manager on this ticket. Please be patient we will answer your problem as soon as possible"
+    );
+
+    public JdaEmbed error = JdaEmbed.red(
+            "Error",
+            "An error occurred while performing this action. Please contact the author in regards to this."
+    );
 
 }
