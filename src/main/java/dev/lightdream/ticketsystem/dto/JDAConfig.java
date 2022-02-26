@@ -51,7 +51,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "If you need the help of a manager please press the button bellow!",
             new ArrayList<>(),
             Arrays.asList(new Button(JDAButtonType.DANGER, "manager", "\uD83C\uDF93 Manager"),
-                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Inchide ticket-ul"))
+                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"))
     );
 
     public JdaEmbed unbanTicketGreeting = new JdaEmbed(
@@ -64,7 +64,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "The staff member that have banned you have been notified.",
             new ArrayList<>(),
             Arrays.asList(
-                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Inchide ticket-ul"),
+                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"),
                     new Button(JDAButtonType.PRIMARY, "unban", "\uD83D\uDD13 Unban")
             )
     );
@@ -136,7 +136,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JdaEmbed unBanned = JdaEmbed.green(
             "UnBan",
-            "User %name% is not unbanned. %roles_1%/%roles_2% roles have been restored"
+            "User %name% is now unbanned. %roles_1%/%roles_2% roles have been restored"
     );
 
 
@@ -169,5 +169,33 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "Ban",
             "I can not unban this use because he has a higher rank then me."
     );
+
+    public JdaEmbed invalidTicketID = JdaEmbed.red(
+            "Ticket",
+            "This is not a valid ticket id."
+    );
+
+    public JdaEmbed closedTicket = JdaEmbed.green(
+            "Ticket",
+            "Your ticket has been closed. You can access your transcript by using the command `+transcript %id%`."
+    );
+
+    public JdaEmbed notAllowedToAccessTranscript = JdaEmbed.red(
+            "Transcript",
+            "You are not allowed to access this transcript."
+    );
+
+    public JdaEmbed transcript = JdaEmbed.black(
+            "Transcript",
+            "You can access the transcript with id %id% at %url%."
+    );
+
+    public JdaEmbed tickets = JdaEmbed.green(
+            "%name%'s Tickets (last 10)",
+            ""
+    );
+
+    public String ticketsEntry = "Ticket %type% %id% on date %date%";
+
 
 }

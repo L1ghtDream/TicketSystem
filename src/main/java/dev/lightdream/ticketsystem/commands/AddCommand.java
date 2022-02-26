@@ -1,6 +1,5 @@
 package dev.lightdream.ticketsystem.commands;
 
-import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.Ticket;
@@ -10,8 +9,8 @@ import net.dv8tion.jda.api.entities.*;
 import java.util.List;
 
 public class AddCommand extends DiscordCommand {
-    public AddCommand(JDAExtensionMain main) {
-        super(main, "add", "Adds user to ticket", Permission.MANAGE_CHANNEL, "[user_id]", true);
+    public AddCommand() {
+        super(Main.instance, "add", "Adds user to ticket", Permission.MANAGE_CHANNEL, "[user_id]", true);
     }
 
     @Override

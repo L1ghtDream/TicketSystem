@@ -1,6 +1,5 @@
 package dev.lightdream.ticketsystem.commands;
 
-import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.Button;
 import dev.lightdream.jdaextension.dto.JdaEmbed;
@@ -16,8 +15,8 @@ import java.util.List;
 
 public class SetupCommand extends DiscordCommand {
 
-    public SetupCommand(JDAExtensionMain main) {
-        super(main, "setup", Main.instance.lang.setupCommandDescription, Permission.ADMINISTRATOR, "", true);
+    public SetupCommand() {
+        super(Main.instance, "setup", "", Permission.ADMINISTRATOR, "", true);
     }
 
     @Override

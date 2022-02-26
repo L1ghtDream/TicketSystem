@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TicketManager {
 
-    public static void closeTicket(TextChannel textChannel) {
+    public static void closeTicket(TextChannel textChannel, @NotNull User user) {
         Ticket ticket = Main.instance.databaseManager.getTicket(textChannel.getIdLong());
 
         if (ticket == null) {
@@ -20,33 +20,16 @@ public class TicketManager {
             return;
         }
 
-        _closeTicket(textChannel, ticket);
-
-        //AtomicBoolean found = new AtomicBoolean(false);
-
-        //if (Main.instance.config.unbanTicket.categoryID.equals(textChannel.getParentCategoryIdLong())) {
-        //    _closeTicket(textChannel);
-        //    found.set(true);
-        //    return;
-        //}
-        //Main.instance.config.ticketTypes.forEach(ticketType -> {
-        //    if (ticketType.categoryID.equals(textChannel.getParentCategoryIdLong())) {
-        //        _closeTicket(textChannel);
-        //        found.set(true);
-        //    }
-        //});
-
-        //if (!found.get()) {
-        //    textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notTicket.build().build()).queue();
-        //}
+        _closeTicket(textChannel, ticket, user);
     }
 
-    private static void _closeTicket(TextChannel textChannel, @NotNull Ticket ticket) {
+    private static void _closeTicket(TextChannel textChannel, @NotNull Ticket ticket, @NotNull User user) {
         textChannel.sendMessageEmbeds(Main.instance.jdaConfig.closingTicket.build().build()).queue();
         new java.util.Timer().schedule(new java.util.TimerTask() {
             @Override
             public void run() {
-                ticket.delete();
+                ticket.getTranscript().record(user, "Closed Ticket");
+                ticket.close();
                 textChannel.delete().queue(null, new ErrorHandler().handle(
                         ErrorResponse.UNKNOWN_CHANNEL,
                         e -> {
@@ -69,16 +52,21 @@ public class TicketManager {
             return;
         }
 
-        for (GuildChannel channel : category.getChannels()) {
-            if (channel.getName().equalsIgnoreCase(member.getEffectiveName())) {
-                if (Main.instance.bot.getTextChannelById(channel.getId()) == null) {
-                    return;
-                }
-                //noinspection ConstantConditions
-                Main.instance.bot.getTextChannelById(channel.getId()).sendMessage("<@" + member.getId() + ">")
-                        .queue(message -> message.delete().queue());
-                return;
+        for (TextChannel channel : category.getTextChannels()) {
+            Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
+
+            if (ticket == null) {
+                continue;
             }
+
+            if (!ticket.creatorID.equals(member.getIdLong())) {
+                continue;
+            }
+
+            //noinspection ConstantConditions
+            Main.instance.bot.getTextChannelById(channel.getId()).sendMessage("<@" + member.getId() + ">")
+                    .queue(message -> message.delete().queue());
+            return;
         }
 
         guild.createTextChannel(member.getEffectiveName(), category).queue(textChannel -> {

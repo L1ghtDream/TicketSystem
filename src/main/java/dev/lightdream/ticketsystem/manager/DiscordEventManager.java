@@ -10,7 +10,11 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DiscordEventManager extends ListenerAdapter {
 
@@ -25,7 +29,7 @@ public class DiscordEventManager extends ListenerAdapter {
 
         Conditions:
         if (id.equalsIgnoreCase("close-ticket")) {
-            TicketManager.closeTicket(event.getTextChannel());
+            TicketManager.closeTicket(event.getTextChannel(), event.getUser());
         } else if (id.equalsIgnoreCase("manager")) {
             MessageChannel channel = event.getChannel();
 
@@ -123,5 +127,34 @@ public class DiscordEventManager extends ListenerAdapter {
 
     }
 
+    @Override
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        if (event.getAuthor().isBot()) {
+            return;
+        }
 
+        AtomicBoolean inCategory = new AtomicBoolean(false);
+
+        if (Main.instance.config.unbanTicket.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
+            inCategory.set(true);
+        }
+
+        Main.instance.config.ticketTypes.forEach(ticketType -> {
+            if (ticketType.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
+                inCategory.set(true);
+            }
+        });
+
+        if (!inCategory.get()) {
+            return;
+        }
+
+        Ticket ticket = Main.instance.databaseManager.getTicket(event.getChannel().getIdLong());
+
+        if (ticket == null) {
+            return;
+        }
+
+        ticket.getTranscript().record(event.getAuthor(), event.getMessage().getContentRaw());
+    }
 }

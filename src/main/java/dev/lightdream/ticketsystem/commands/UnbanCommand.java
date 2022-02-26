@@ -1,6 +1,5 @@
 package dev.lightdream.ticketsystem.commands;
 
-import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.manager.BanManager;
@@ -13,8 +12,8 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.List;
 
 public class UnbanCommand extends DiscordCommand {
-    public UnbanCommand(JDAExtensionMain main) {
-        super(main, "unban", Main.instance.lang.unbanCommandDescription, Permission.BAN_MEMBERS, "[user_id]", true);
+    public UnbanCommand() {
+        super(Main.instance, "unban", "", Permission.BAN_MEMBERS, "[user_id]", true);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package dev.lightdream.ticketsystem.commands;
 
-import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
@@ -12,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BanCommand extends DiscordCommand {
-    public BanCommand(JDAExtensionMain main) {
-        super(main, "ban", Main.instance.lang.banCommandDescription, Permission.BAN_MEMBERS, "[user_id] [reason]", true);
+    public BanCommand() {
+        super(Main.instance, "ban", "", Permission.BAN_MEMBERS, "[user_id] [reason]", true);
     }
 
     @Override

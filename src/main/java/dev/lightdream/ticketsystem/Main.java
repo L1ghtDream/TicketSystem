@@ -17,7 +17,6 @@ import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.commands.*;
 import dev.lightdream.ticketsystem.dto.Config;
 import dev.lightdream.ticketsystem.dto.JDAConfig;
-import dev.lightdream.ticketsystem.dto.Lang;
 import dev.lightdream.ticketsystem.manager.DatabaseManager;
 import dev.lightdream.ticketsystem.manager.DiscordEventManager;
 import net.dv8tion.jda.api.JDA;
@@ -35,7 +34,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     public SQLConfig sqlConfig;
     public DriverConfig driverConfig;
     public JDAConfig jdaConfig;
-    public Lang lang;
 
     public FileManager fileManager;
     public DatabaseManager databaseManager;
@@ -65,11 +63,13 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         discordCommandManager = new DiscordCommandManager(this, Arrays.asList(
                 new HelpCommand(this),
                 new StatsCommand(this),
-                new CloseCommand(this),
-                new BanCommand(this),
-                new UnbanCommand(this),
-                new AddCommand(this),
-                new SetupCommand(this)
+                new CloseCommand(),
+                new BanCommand(),
+                new UnbanCommand(),
+                new AddCommand(),
+                new TicketsCommand(),
+                new TranscriptCommand(),
+                new SetupCommand()
         ));
         discordEventManager = new DiscordEventManager(this);
 
@@ -81,7 +81,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         sqlConfig = fileManager.load(SQLConfig.class);
         driverConfig = fileManager.load(DriverConfig.class);
         jdaConfig = fileManager.load(JDAConfig.class);
-        lang = fileManager.load(Lang.class);
     }
 
     @Override
