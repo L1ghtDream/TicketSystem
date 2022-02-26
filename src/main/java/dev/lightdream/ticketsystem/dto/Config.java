@@ -30,7 +30,7 @@ public class Config {
 
     public TicketType unbanTicket = new TicketType("\uD83D\uDD13 Cerere unban", "unban-request", 946825068963577926L, new ArrayList<>());
 
-    public Long bannedRank =946812771037741086L;
+    public Long bannedRank = 946812771037741086L;
     public Long managerPingRank = 947042026321506375L;
 
 }

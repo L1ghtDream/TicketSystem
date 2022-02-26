@@ -73,6 +73,10 @@ public class DiscordEventManager extends ListenerAdapter {
                                 .parse("reason", ban.reason)
                                 .build().build()).queue());
 
+                ((MessageChannel) textChannel).sendMessage("<@" + ban.bannedBy + ">").queue(message ->
+                        message.delete().queue());
+
+
                 return null;
             });
         } else if (id.equalsIgnoreCase("unban")) {

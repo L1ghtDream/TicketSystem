@@ -38,6 +38,7 @@ public class BanRecord extends DatabaseEntry {
         this.active = true;
     }
 
+    @SuppressWarnings("unused")
     public BanRecord() {
         super(Main.instance);
     }

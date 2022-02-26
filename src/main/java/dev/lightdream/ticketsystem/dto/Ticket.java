@@ -25,6 +25,7 @@ public class Ticket extends DatabaseEntry {
         this.creatorID = creatorID;
     }
 
+    @SuppressWarnings("unused")
     public Ticket() {
         super(Main.instance);
     }
