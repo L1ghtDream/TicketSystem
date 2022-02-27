@@ -116,8 +116,9 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JdaEmbed helpEmbed = JdaEmbed.black(
             "Help",
-            "+help\n" +
-                    "**Moderation**\n" +
+            "+**General**\n" +
+                    "+help\n" +
+                    "\n**Moderation**\n" +
                     "+ban [user_id] [reason]\n" +
                     "+unban [user_id]\n" +
                     "+checkBan [user_id]\n" +
@@ -219,7 +220,6 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
     );
 
     public String bansEntry = "[%id%] Ban on date %date% for `%reason%`";
-
 
 
 }
