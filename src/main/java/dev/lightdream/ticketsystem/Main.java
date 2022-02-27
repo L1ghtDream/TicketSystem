@@ -132,11 +132,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     }
 
     @Override
-    public String getPrefix() {
-        return config.prefix;
-    }
-
-    @Override
     public JdaEmbed getHelpEmbed() {
         return jdaConfig.helpEmbed;
     }

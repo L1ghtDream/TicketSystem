@@ -129,7 +129,7 @@ public class DiscordEventManager extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) {
+        if (event.getAuthor().isBot() || !event.isFromGuild()) {
             return;
         }
 
