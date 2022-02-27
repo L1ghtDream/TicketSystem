@@ -73,7 +73,7 @@ public class DiscordEventManager extends ListenerAdapter {
                                 .parse("name", user.getName())
                                 .parse("id", user.getId())
                                 .parse("banned_by_name", bannedBy.getName())
-                                .parse("banned_by_id", String.valueOf(bannedBy))
+                                .parse("banned_by_id", bannedBy.getId())
                                 .parse("reason", ban.reason)
                                 .build().build()).queue());
 
