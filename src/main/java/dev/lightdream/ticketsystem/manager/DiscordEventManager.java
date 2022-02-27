@@ -133,28 +133,32 @@ public class DiscordEventManager extends ListenerAdapter {
             return;
         }
 
-        AtomicBoolean inCategory = new AtomicBoolean(false);
+        try {
+            AtomicBoolean inCategory = new AtomicBoolean(false);
 
-        if (Main.instance.config.unbanTicket.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
-            inCategory.set(true);
-        }
-
-        Main.instance.config.ticketTypes.forEach(ticketType -> {
-            if (ticketType.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
+            if (Main.instance.config.unbanTicket.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
                 inCategory.set(true);
             }
-        });
 
-        if (!inCategory.get()) {
-            return;
+            Main.instance.config.ticketTypes.forEach(ticketType -> {
+                if (ticketType.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
+                    inCategory.set(true);
+                }
+            });
+
+            if (!inCategory.get()) {
+                return;
+            }
+
+            Ticket ticket = Main.instance.databaseManager.getTicket(event.getChannel().getIdLong());
+
+            if (ticket == null) {
+                return;
+            }
+
+            ticket.getTranscript().record(event.getAuthor(), event.getMessage().getContentRaw());
+        } catch (Throwable t) {
+            //Empty
         }
-
-        Ticket ticket = Main.instance.databaseManager.getTicket(event.getChannel().getIdLong());
-
-        if (ticket == null) {
-            return;
-        }
-
-        ticket.getTranscript().record(event.getAuthor(), event.getMessage().getContentRaw());
     }
 }
