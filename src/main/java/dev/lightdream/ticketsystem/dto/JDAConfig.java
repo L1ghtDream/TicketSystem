@@ -116,7 +116,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JdaEmbed helpEmbed = JdaEmbed.black(
             "Help",
-            "+**General**\n" +
+            "**General**\n" +
                     "+help\n" +
                     "\n**Moderation**\n" +
                     "+ban [user_id] [reason]\n" +
