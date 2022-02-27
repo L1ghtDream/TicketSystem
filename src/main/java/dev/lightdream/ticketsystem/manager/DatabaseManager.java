@@ -35,6 +35,16 @@ public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
                 .orElse(null);
     }
 
+    public @Nullable BanRecord getBan(int id) {
+        return get(BanRecord.class).query(new QueryConstrains().equals("id", id))
+                .order(OrderBy.DESCENDENT("timestamp"))
+                .limit(1)
+                .query()
+                .stream()
+                .findAny()
+                .orElse(null);
+    }
+
     public @Nullable Ticket getTicket(Long id) {
         return get(Ticket.class).query(new QueryConstrains().and(new QueryConstrains().equals("channel_id", id),
                         new QueryConstrains().equals("active", true)))
@@ -53,8 +63,11 @@ public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
     }
 
     //TODO
-    public List<Ticket> getPastBans() {
-        return new ArrayList<>();
+    public List<BanRecord> getPastBans(Long userID) {
+        return get(BanRecord.class).query(new QueryConstrains().equals("user_id", userID))
+                .order(OrderBy.DESCENDENT("timestamp"))
+                .limit(10)
+                .query();
     }
 
     public @Nullable Ticket getTicket(int id) {

@@ -175,6 +175,11 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "This is not a valid ticket id."
     );
 
+    public JdaEmbed invalidBanID = JdaEmbed.red(
+            "Bans",
+            "This is not a valid ban id."
+    );
+
     public JdaEmbed closedTicket = JdaEmbed.green(
             "Ticket",
             "Your ticket has been closed. You can access your transcript by using the command `+transcript %id%`."
@@ -192,10 +197,18 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JdaEmbed tickets = JdaEmbed.green(
             "%name%'s Tickets (last 10)",
-            ""
+            "You can use +transcript [id] to see the transcript on one specific ticket\n"
     );
 
-    public String ticketsEntry = "Ticket %type% %id% on date %date%";
+    public String ticketsEntry = "[%id%] Ticket %type% on date %date%";
+
+    public JdaEmbed bans = JdaEmbed.green(
+            "%name%'s Bans (last 10)",
+            "You can use +banDetails [id] to see more about one specific ban\n"
+    );
+
+    public String bansEntry = "[%id%] Ban on date %date% for `%reason%`";
+
 
 
 }
