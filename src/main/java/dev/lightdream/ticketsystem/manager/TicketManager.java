@@ -63,9 +63,14 @@ public class TicketManager {
                 continue;
             }
 
-            //noinspection ConstantConditions
-            Main.instance.bot.getTextChannelById(channel.getId()).sendMessage("<@" + member.getId() + ">")
+            channel.putPermissionOverride(member).setAllow(
+                    Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
+                    Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
+            ).queue();
+
+            channel.sendMessage("<@" + member.getId() + ">")
                     .queue(message -> message.delete().queue());
+
             return;
         }
 
