@@ -2,25 +2,22 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.Button;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.jdaextension.enums.JDAButtonType;
 import dev.lightdream.ticketsystem.Main;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class SetupCommand extends DiscordCommand {
 
     public SetupCommand() {
-        super(Main.instance, "setup", "", Permission.ADMINISTRATOR, "", true);
+        super(Main.instance, "setup", Main.instance.lang.setupCommandDescription, Permission.ADMINISTRATOR, true, new ArrayList<>());
     }
 
     @Override
-    public void execute(Member member, TextChannel textChannel, List<String> list) {
+    public void executeGuild(CommandContext context) {
         JdaEmbed ticket = Main.instance.jdaConfig.ticket.clone();
         Main.instance.config.ticketTypes.forEach(ticketType ->
                 ticket.buttons.add(new Button(JDAButtonType.PRIMARY, ticketType.id, ticketType.name)));
@@ -32,12 +29,12 @@ public class SetupCommand extends DiscordCommand {
 
         banTicket.buildMessageAction(Main.instance.bot.getTextChannelById(Main.instance.config.unbanTicketsChanel)).queue();
 
-        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.setupFinished.build().build()).queue();
+        sendMessage(context, Main.instance.jdaConfig.setupFinished);
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
-        //Imposible
+    public void executePrivate(CommandContext commandContext) {
+
     }
 
     @Override

@@ -1,7 +1,10 @@
 package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.databasemanager.dto.LambdaExecutor;
+import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
+import dev.lightdream.ticketsystem.dto.BlacklistRecord;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
 import net.dv8tion.jda.api.Permission;
@@ -12,19 +15,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class TicketManager {
 
-    public static void closeTicket(TextChannel textChannel, @NotNull User user) {
+    public static JdaEmbed closeTicket(TextChannel textChannel, @NotNull User user) {
         Ticket ticket = Main.instance.databaseManager.getTicket(textChannel.getIdLong());
 
         if (ticket == null) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notTicket.build().build()).queue();
-            return;
+            return Main.instance.jdaConfig.notTicket;
         }
 
-        _closeTicket(textChannel, ticket, user);
+        return _closeTicket(textChannel, ticket, user);
     }
 
-    private static void _closeTicket(TextChannel textChannel, @NotNull Ticket ticket, @NotNull User user) {
-        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.closingTicket.build().build()).queue();
+    private static JdaEmbed _closeTicket(TextChannel textChannel, @NotNull Ticket ticket, @NotNull User user) {
         new java.util.Timer().schedule(new java.util.TimerTask() {
             @Override
             public void run() {
@@ -38,10 +39,12 @@ public class TicketManager {
                 ));
             }
         }, 5000);
+        return Main.instance.jdaConfig.closingTicket;
     }
 
 
-    public static void createTicket(Guild guild, Member member, TicketType ticketType, LambdaExecutor executeOnChannel) {
+    public static void createTicket(Guild guild, Member member, TicketType ticketType, LambdaExecutor executeOnChannel, LambdaExecutor replyExecutor) {
+        Debugger.info("Creating ticket");
         if (guild == null) {
             return;
         }
@@ -49,6 +52,13 @@ public class TicketManager {
         Category category = guild.getCategoryById(ticketType.categoryID);
 
         if (category == null || member == null) {
+            return;
+        }
+
+        BlacklistRecord blacklistRecord = Main.instance.databaseManager.getBlacklist(member.getIdLong());
+
+        if (blacklistRecord != null) {
+            replyExecutor.execute(Main.instance.jdaConfig.blacklisted);
             return;
         }
 
@@ -71,6 +81,7 @@ public class TicketManager {
             channel.sendMessage("<@" + member.getId() + ">")
                     .queue(message -> message.delete().queue());
 
+            replyExecutor.execute(Main.instance.jdaConfig.alreadyHaveTicket);
             return;
         }
 
@@ -96,6 +107,7 @@ public class TicketManager {
 
             new Ticket(ticketType.id, textChannel.getIdLong(), member.getIdLong()).save();
 
+            replyExecutor.execute(Main.instance.jdaConfig.ticketCreated);
             executeOnChannel.execute(textChannel);
         });
     }

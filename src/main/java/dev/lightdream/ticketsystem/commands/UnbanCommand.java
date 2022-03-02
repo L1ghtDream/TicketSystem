@@ -1,41 +1,37 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.manager.BanManager;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.List;
+import java.util.Collections;
 
 public class UnbanCommand extends DiscordCommand {
     public UnbanCommand() {
-        super(Main.instance, "unban", "", Permission.BAN_MEMBERS, "[user_id]", true);
+        super(Main.instance, "unban", Main.instance.lang.unbanCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
+                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+        ));
     }
 
     @Override
-    public void execute(Member member, TextChannel textChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(textChannel);
-            return;
-        }
-
+    public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = Long.parseLong(args.get(0));
+            id = context.getArgument("user_id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;
         }
 
-        BanManager.unban(id, textChannel);
+        BanManager.unban(id, context.getTextChannel());
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
+    public void executePrivate(CommandContext commandContext) {
 
     }
 

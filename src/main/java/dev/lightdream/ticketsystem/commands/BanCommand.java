@@ -1,67 +1,70 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BanCommand extends DiscordCommand {
     public BanCommand() {
-        super(Main.instance, "ban", "", Permission.BAN_MEMBERS, "[user_id] [reason]", true);
+        super(Main.instance, "ban", Main.instance.lang.banCommandDescription, Permission.BAN_MEMBERS, true, Arrays.asList(
+                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true),
+                new CommandArgument(OptionType.STRING, "reason", Main.instance.lang.banReasonDescription, true)
+        ));
     }
 
     @Override
-    public void execute(Member sender, TextChannel textChannel, List<String> args) {
-        if (args.size() < 2) {
-            sendUsage(textChannel);
-            return;
-        }
+    public void executeGuild(CommandContext context) {
+
         long id;
-        StringBuilder reason = new StringBuilder();
+        String reason = context.getArgument("reason").getAsString();
+
         try {
-            id = Long.parseLong(args.get(0));
-            args.subList(1, args.size())
-                    .forEach(word -> reason.append(word)
-                            .append(" "));
+            id = context.getArgument("user_id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;
         }
 
         if (Main.instance.databaseManager.getBan(id) != null) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyBanned.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.alreadyBanned);
             return;
         }
 
 
         List<Long> ranks = new ArrayList<>();
 
-        textChannel.getGuild()
+        context.getGuild()
                 .retrieveMemberById(id)
                 .queue(member -> {
                     if (member == null) {
-                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidUser.build().build()).queue();
+                        sendMessage(context, Main.instance.jdaConfig.invalidUser);
                         return;
                     }
 
-                    Guild guild = textChannel.getGuild();
-
                     member.getRoles().forEach(role -> ranks.add(role.getIdLong()));
 
+                    Guild guild = context.getGuild();
+
                     for (Long rank : ranks) {
-                        Role role = textChannel.getGuild().getRoleById(rank);
+                        Role role = guild.getRoleById(rank);
                         if (role == null) {
                             continue;
                         }
                         try {
                             guild.removeRoleFromMember(member, role).queue();
                         } catch (HierarchyException e) {
-                            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.cannotBan.build().build()).queue();
+                            sendMessage(context, Main.instance.jdaConfig.cannotBan);
                             return;
                         }
                     }
@@ -69,21 +72,20 @@ public class BanCommand extends DiscordCommand {
                     Role role = guild.getRoleById(Main.instance.config.bannedRank);
 
                     if (role == null) {
-                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidBannedRole.build().build()).queue();
+                        sendMessage(context, Main.instance.jdaConfig.invalidBannedRole);
                         return;
                     }
 
                     guild.addRoleToMember(member, role).queue();
 
-                    new BanRecord(id, sender.getIdLong(), ranks, reason.toString(), System.currentTimeMillis()).save();
-                    textChannel.sendMessageEmbeds(Main.instance.jdaConfig.userBanned
-                                    .parse("name", member.getEffectiveName()).build().build())
-                            .queue();
+                    new BanRecord(id, context.getUser().getIdLong(), ranks, reason, System.currentTimeMillis()).save();
+                    sendMessage(context, Main.instance.jdaConfig.userBanned
+                            .parse("name", member.getEffectiveName()));
                 });
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
+    public void executePrivate(CommandContext commandContext) {
         //Impossible
     }
 

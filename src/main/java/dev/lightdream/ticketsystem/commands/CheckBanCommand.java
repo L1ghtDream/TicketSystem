@@ -1,56 +1,50 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.List;
+import java.util.Collections;
 
 public class CheckBanCommand extends DiscordCommand {
     public CheckBanCommand() {
-        super(Main.instance, "checkBan", "", Permission.BAN_MEMBERS, "[user_id]", true);
+        super(Main.instance, "checkBan", Main.instance.lang.checkBanCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
+                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.banIDDescription, true)
+        ));
     }
 
     @Override
-    public void execute(Member member, TextChannel textChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(textChannel);
-            return;
-        }
-
+    public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = Long.parseLong(args.get(0));
+            id = context.getArgument("user_id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;
         }
 
         BanRecord ban = Main.instance.databaseManager.getBan(id);
         if (ban == null) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notBanned.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.notBanned);
             return;
         }
 
         Main.instance.bot.retrieveUserById(id).queue(user ->
                 Main.instance.bot.retrieveUserById(ban.bannedBy).queue(bannedBy ->
-                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.unbanDetails
+                        sendMessage(context, Main.instance.jdaConfig.unbanDetails
                                 .parse("name", user.getName())
                                 .parse("id", user.getId())
                                 .parse("banned_by_name", bannedBy.getName())
                                 .parse("banned_by_id", String.valueOf(bannedBy))
-                                .parse("reason", ban.reason)
-                                .build().build()
-                        ).queue()));
+                                .parse("reason", ban.reason))));
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
+    public void executePrivate(CommandContext commandContext) {
         //Impossible
     }
 

@@ -7,8 +7,6 @@ import java.util.List;
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class Config {
 
-    public String prefix = "+";
-
     public boolean debug = false;
     public Long ticketsChanel = 0L;
     public Long unbanTicketsChanel = 0L;

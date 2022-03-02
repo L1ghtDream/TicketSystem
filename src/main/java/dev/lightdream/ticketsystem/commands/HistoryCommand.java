@@ -1,36 +1,33 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class HistoryCommand extends DiscordCommand {
     public HistoryCommand() {
-        super(Main.instance, "history", "", Permission.BAN_MEMBERS, "[user_id]", true);
+        super(Main.instance, "history", Main.instance.lang.historyCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
+                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+        ));
     }
 
     @Override
-    public void execute(Member member, TextChannel textChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(textChannel);
-            return;
-        }
-
+    public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = Long.parseLong(args.get(0));
+            id = context.getArgument("user_id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;
         }
 
@@ -39,24 +36,23 @@ public class HistoryCommand extends DiscordCommand {
             JdaEmbed embed = Main.instance.jdaConfig.bans.clone();
             bans.forEach(ban -> {
                 System.out.println(ban.reason);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    Date date = new Date(ban.timestamp);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                Date date = new Date(ban.timestamp);
 
-                    embed.description += Main.instance.jdaConfig.bansEntry
-                            .replace("%id%", String.valueOf(ban.id))
-                            .replace("%reason%", ban.reason)
-                            .replace("%date%", dateFormat.format(date));
-                    embed.description += "\n";
+                embed.description += Main.instance.jdaConfig.bansEntry
+                        .replace("%id%", String.valueOf(ban.id))
+                        .replace("%reason%", ban.reason)
+                        .replace("%date%", dateFormat.format(date));
+                embed.description += "\n";
             });
 
-            textChannel.sendMessageEmbeds(embed
-                    .parse("name", user.getName())
-                    .build().build()).queue();
+            sendMessage(context, embed
+                    .parse("name", user.getName()));
         });
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
+    public void executePrivate(CommandContext commandContext) {
         //Impossible
     }
 

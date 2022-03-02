@@ -1,58 +1,53 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.List;
+import java.util.Collections;
 
 public class AddCommand extends DiscordCommand {
     public AddCommand() {
-        super(Main.instance, "add", "Adds user to ticket", Permission.MANAGE_CHANNEL, "[user_id]", true);
+        super(Main.instance, "add", Main.instance.lang.addCommandDescription, Permission.MANAGE_CHANNEL, false, Collections.singletonList(
+                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+        ));
     }
 
     @Override
-    public void execute(Member sender, TextChannel textChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(textChannel);
-            return;
-        }
-
-        Ticket ticket = Main.instance.databaseManager.getTicket(textChannel.getIdLong());
+    public void executeGuild(CommandContext context) {
+        Ticket ticket = Main.instance.databaseManager.getTicket(context.getTextChannel().getIdLong());
 
         if (ticket == null) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notTicket.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.notTicket);
             return;
         }
 
         long id;
         try {
-            id = Long.parseLong(args.get(0));
+            id = context.getArgument("user_id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;
         }
 
-        Guild guild = textChannel.getGuild();
-
-        guild.retrieveMemberById(id).queue(member -> {
-            textChannel.putPermissionOverride(member).setAllow(
+        context.getGuild().retrieveMemberById(id).queue(member -> {
+            context.getTextChannel().putPermissionOverride(member).setAllow(
                     Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                     Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
             ).queue();
 
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.addedToTicket
-                    .parse("name", member.getEffectiveName()).build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.addedToTicket
+                    .parse("name", member.getEffectiveName()));
 
         });
-
-
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
+    public void executePrivate(CommandContext commandContext) {
         //Impossible
     }
 

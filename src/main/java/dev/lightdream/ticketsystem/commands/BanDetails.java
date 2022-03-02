@@ -1,34 +1,30 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.List;
+import java.util.Collections;
 
 public class BanDetails extends DiscordCommand {
     public BanDetails() {
-        super(Main.instance, "banDetails", "", Permission.BAN_MEMBERS, "[id]", true);
+        super(Main.instance, "banDetails", Main.instance.lang.banDetailsCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
+                new CommandArgument(OptionType.INTEGER, "id", Main.instance.lang.banIDDescription, true)
+        ));
     }
 
     @Override
-    public void execute(Member member, TextChannel textChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(textChannel);
-            return;
-        }
-
+    public void executeGuild(CommandContext context) {
         int id;
         try {
-            id = Integer.parseInt(args.get(0));
+            id = (int) context.getArgument("id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidBanID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidBanID);
             return;
         }
 
@@ -40,17 +36,16 @@ public class BanDetails extends DiscordCommand {
 
         Main.instance.bot.retrieveUserById(ban.user).queue(user ->
                 Main.instance.bot.retrieveUserById(ban.bannedBy).queue(bannedBy ->
-                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.unbanDetails
+                        sendMessage(context, Main.instance.jdaConfig.unbanDetails
                                 .parse("name", user.getName())
                                 .parse("id", user.getId())
                                 .parse("banned_by_name", bannedBy.getName())
                                 .parse("banned_by_id", bannedBy.getId())
-                                .parse("reason", ban.reason)
-                                .build().build()).queue()));
+                                .parse("reason", ban.reason))));
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> list) {
+    public void executePrivate(CommandContext commandContext) {
         //Impossible
     }
 

@@ -1,37 +1,32 @@
 package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
+import dev.lightdream.jdaextension.dto.CommandArgument;
+import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import dev.lightdream.ticketsystem.dto.Transcript;
-import lombok.SneakyThrows;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 
-import java.util.List;
+import java.util.Collections;
 
 public class TranscriptCommand extends DiscordCommand {
     public TranscriptCommand() {
-        super(Main.instance, "transcript", "See the transcript of a ticket", null, "[id]", true);
+        super(Main.instance, "transcript", Main.instance.lang.transcriptCommandDescription, null, true, Collections.singletonList(
+                new CommandArgument(OptionType.INTEGER, "id", Main.instance.lang.ticketIDDescription, true)
+        ));
     }
 
-    @SneakyThrows
     @Override
-    public void execute(Member member, TextChannel textChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(textChannel);
-            return;
-        }
+    public void executeGuild(CommandContext context) {
 
         int id;
         try {
-            id = Integer.parseInt(args.get(0));
+            id = (int) context.getArgument("id").getAsLong();
         } catch (Exception e) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidTicketID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidTicketID);
             return;
         }
 
@@ -48,25 +43,20 @@ public class TranscriptCommand extends DiscordCommand {
             return;
         }
 
-        if (!ticket.creatorID.equals(member.getIdLong()) && !member.hasPermission(Permission.ADMINISTRATOR)) {
-            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.notAllowedToAccessTranscript.build().build()).queue();
+        if (!ticket.creatorID.equals(context.getMember().getIdLong()) && !context.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+            sendMessage(context, Main.instance.jdaConfig.notAllowedToAccessTranscript);
             return;
         }
-        transcript.send(member.getUser());
+        transcript.send(context.getUser());
     }
 
     @Override
-    public void execute(User user, MessageChannel messageChannel, List<String> args) {
-        if (args.size() != 1) {
-            sendUsage(messageChannel);
-            return;
-        }
-
+    public void executePrivate(CommandContext context) {
         int id;
         try {
-            id = Integer.parseInt(args.get(0));
+            id = (int) context.getArgument("id").getAsLong();
         } catch (Exception e) {
-            messageChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidTicketID.build().build()).queue();
+            sendMessage(context, Main.instance.jdaConfig.invalidTicketID);
             return;
         }
 
@@ -81,11 +71,11 @@ public class TranscriptCommand extends DiscordCommand {
             return;
         }
 
-        if (!ticket.creatorID.equals(user.getIdLong())) {
-            messageChannel.sendMessageEmbeds(Main.instance.jdaConfig.notAllowedToAccessTranscript.build().build()).queue();
+        if (!ticket.creatorID.equals(context.getUser().getIdLong())) {
+            sendMessage(context, Main.instance.jdaConfig.notAllowedToAccessTranscript);
             return;
         }
-        transcript.send(user);
+        transcript.send(context.getUser());
     }
 
     @Override

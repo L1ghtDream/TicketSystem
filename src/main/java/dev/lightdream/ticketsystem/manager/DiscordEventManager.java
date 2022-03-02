@@ -1,5 +1,6 @@
 package dev.lightdream.ticketsystem.manager;
 
+import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
@@ -29,8 +30,11 @@ public class DiscordEventManager extends ListenerAdapter {
 
         Conditions:
         if (id.equalsIgnoreCase("close-ticket")) {
+            Debugger.info("IF-ELSE 1");
             TicketManager.closeTicket(event.getTextChannel(), event.getUser());
+            event.deferEdit().queue();
         } else if (id.equalsIgnoreCase("manager")) {
+            Debugger.info("IF-ELSE 2");
             MessageChannel channel = event.getChannel();
 
             Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
@@ -48,17 +52,20 @@ public class DiscordEventManager extends ListenerAdapter {
 
             ticket.pingedManager = true;
             ticket.save();
+            event.deferEdit().queue();
         } else if (id.equals(Main.instance.config.unbanTicket.id)) {
+            Debugger.info("IF-ELSE 3");
+
             User user = event.getUser();
 
             BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
 
             if (ban == null) {
-                //todo possibly private chanel message
-                break Conditions;
+                event.replyEmbeds(Main.instance.jdaConfig.notBanned.build().build()).setEphemeral(true).queue();
+                return;
             }
 
-            TicketManager.createTicket(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, textChannel -> {
+            TicketManager.createTicket(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, (textChannel) -> {
                 String avatar = user.getAvatarUrl() == null ?
                         "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3" :
                         user.getAvatarUrl();
@@ -80,10 +87,14 @@ public class DiscordEventManager extends ListenerAdapter {
                 ((MessageChannel) textChannel).sendMessage("<@" + ban.bannedBy + ">").queue(message ->
                         message.delete().queue());
 
-
+                return null;
+            }, embed -> {
+                event.replyEmbeds(((JdaEmbed) embed).build().build()).setEphemeral(true).queue();
                 return null;
             });
         } else if (id.equalsIgnoreCase("unban")) {
+            Debugger.info("IF-ELSE 4");
+
             Member member = event.getMember();
             TextChannel channel = event.getTextChannel();
 
@@ -100,14 +111,18 @@ public class DiscordEventManager extends ListenerAdapter {
             }
 
             BanManager.unban(ticket.creatorID, channel);
+            event.deferEdit().queue();
         } else {
+            Debugger.info("IF-ELSE 5");
 
             Main.instance.config.ticketTypes.forEach(ticketType -> {
                 if (!ticketType.id.equals(id)) {
                     return;
                 }
 
-                TicketManager.createTicket(event.getGuild(), event.getMember(), ticketType, textChannel -> {
+                Debugger.info("For loop instance");
+
+                TicketManager.createTicket(event.getGuild(), event.getMember(), ticketType, (textChannel) -> {
                     User user = event.getUser();
 
                     String avatar = user.getAvatarUrl() == null ?
@@ -118,13 +133,14 @@ public class DiscordEventManager extends ListenerAdapter {
                             .parse("name", user.getName())
                             .parse("avatar", avatar)
                             .buildMessageAction((MessageChannel) textChannel).queue();
+                    //((MessageChannel) textChannel).sendMessageEmbeds(((JdaEmbed) embed).build().build()).setEphemeral(true).queue();
+                    return null;
+                }, embed -> {
+                    event.replyEmbeds(((JdaEmbed) embed).build().build()).setEphemeral(true).queue();
                     return null;
                 });
             });
         }
-
-        event.deferEdit().queue();
-
     }
 
     @Override
@@ -162,3 +178,5 @@ public class DiscordEventManager extends ListenerAdapter {
         }
     }
 }
+
+

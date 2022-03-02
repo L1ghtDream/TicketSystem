@@ -221,5 +221,52 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public String bansEntry = "[%id%] Ban on date %date% for `%reason%`";
 
+    public JdaEmbed blacklisted = JdaEmbed.red(
+            "Tickets",
+            "You have been blacklisted from create any ticket"
+    );
+
+    public JdaEmbed alreadyHaveTicket = JdaEmbed.red(
+            "Tickets",
+            "You already have a ticket of this type. I have mentioned you on the channel."
+    );
+
+    public JdaEmbed ticketCreated = JdaEmbed.green(
+            "Tickets",
+            "We have created your ticket."
+    );
+
+    public JdaEmbed invalidAction = JdaEmbed.red(
+            "Commands",
+            "This is not a valid action."
+    );
+
+    public JdaEmbed blacklistAdded = JdaEmbed.green(
+            "Blacklist",
+            "User %user% has been added to the blacklist."
+    );
+
+    public JdaEmbed blacklistRemoved = JdaEmbed.green(
+            "Blacklist",
+            "User %user% has been added to the blacklist."
+    );
+
+    public JdaEmbed blacklistInfo = JdaEmbed.black(
+            "Blacklist",
+            "%user%'s blacklist status is %status%."
+    );
+
+    public JdaEmbed alreadyBlacklisted = JdaEmbed.red(
+            "Blacklist",
+            "This user is already blacklisted"
+    );
+
+    public JdaEmbed notBlacklisted = JdaEmbed.red(
+            "Blacklist",
+            "This user is not blacklisted"
+    );
+
+    public String blacklistStatusTrue = "blacklisted";
+    public String blacklistStatusFalse = "not blacklisted";
 
 }

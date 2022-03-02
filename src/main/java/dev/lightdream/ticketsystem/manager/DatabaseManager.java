@@ -5,11 +5,11 @@ import dev.lightdream.databasemanager.OrderBy;
 import dev.lightdream.databasemanager.database.ProgrammaticHikariDatabaseManager;
 import dev.lightdream.databasemanager.dto.QueryConstrains;
 import dev.lightdream.ticketsystem.dto.BanRecord;
+import dev.lightdream.ticketsystem.dto.BlacklistRecord;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import dev.lightdream.ticketsystem.dto.Transcript;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
@@ -22,6 +22,7 @@ public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
         setup(BanRecord.class);
         setup(Ticket.class);
         setup(Transcript.class);
+        setup(BlacklistRecord.class);
     }
 
     public @Nullable BanRecord getBan(Long id) {
@@ -81,6 +82,15 @@ public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
 
     public @Nullable Transcript getTranscript(int id) {
         return get(Transcript.class).query(new QueryConstrains().equals("ticket_id", id))
+                .limit(1)
+                .query()
+                .stream()
+                .findAny()
+                .orElse(null);
+    }
+
+    public @Nullable BlacklistRecord getBlacklist(Long id) {
+        return get(BlacklistRecord.class).query(new QueryConstrains().equals("user_id", id))
                 .limit(1)
                 .query()
                 .stream()
