@@ -31,7 +31,8 @@ public class DiscordEventManager extends ListenerAdapter {
         Conditions:
         if (id.equalsIgnoreCase("close-ticket")) {
             Debugger.info("IF-ELSE 1");
-            TicketManager.closeTicket(event.getTextChannel(), event.getUser());
+            JdaEmbed embed = TicketManager.closeTicket(event.getTextChannel(), event.getUser());
+            event.getTextChannel().sendMessageEmbeds(embed.build().build()).queue();
             event.deferEdit().queue();
         } else if (id.equalsIgnoreCase("manager")) {
             Debugger.info("IF-ELSE 2");

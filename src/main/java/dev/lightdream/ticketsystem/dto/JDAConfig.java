@@ -117,23 +117,23 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
     public JdaEmbed helpEmbed = JdaEmbed.black(
             "Help",
             "**General**\n" +
-                    "+help\n" +
+                    "/help\n" +
                     "\n**Moderation**\n" +
-                    "+ban [user_id] [reason]\n" +
-                    "+unban [user_id]\n" +
-                    "+checkBan [user_id]\n" +
-                    "+banDetails [id]\n" +
-                    "+history [user_id]\n" +
+                    "/ban [user_id] [reason]\n" +
+                    "/unban [user_id]\n" +
+                    "/checkBan [user_id]\n" +
+                    "/banDetails [id]\n" +
+                    "/history [user_id]\n" +
                     "\n**Tickets**\n" +
-                    "+tickets [user_id]\n" +
-                    "+transcript [id]\n" +
-                    "+add [user_id]\n" +
-                    "+close\n" +
+                    "/tickets [user_id]\n" +
+                    "/transcript [id]\n" +
+                    "/add [user_id]\n" +
+                    "/close\n" +
                     "\n**Management**\n" +
-                    "+setup\n" +
+                    "/setup\n" +
                     "\n" +
-                    "[] - Mandatory arguments\n"
-                    + "<> - Optional / Contextual arguments"
+                    "[] - Mandatory arguments\n" +
+                    "<> - Optional / Contextual arguments"
     );
 
     public JdaEmbed setupFinished = JdaEmbed.green(
@@ -194,7 +194,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JdaEmbed closedTicket = JdaEmbed.green(
             "Ticket",
-            "Your ticket has been closed. You can access your transcript by using the command `+transcript %id%`."
+            "Your ticket has been closed. You can access your transcript by using the command `/transcript %id%`."
     );
 
     public JdaEmbed notAllowedToAccessTranscript = JdaEmbed.red(
@@ -209,14 +209,14 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JdaEmbed tickets = JdaEmbed.green(
             "%name%'s Tickets (last 10)",
-            "You can use +transcript [id] to see the transcript on one specific ticket\n"
+            "You can use /transcript [id] to see the transcript on one specific ticket\n"
     );
 
     public String ticketsEntry = "[%id%] Ticket %type% on date %date%";
 
     public JdaEmbed bans = JdaEmbed.green(
             "%name%'s Bans (last 10)",
-            "You can use +banDetails [id] to see more about one specific ban\n"
+            "You can use /banDetails [id] to see more about one specific ban\n"
     );
 
     public String bansEntry = "[%id%] Ban on date %date% for `%reason%`";

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class CloseCommand extends DiscordCommand {
     public CloseCommand() {
-        super(Main.instance, "close", Main.instance.lang.closeCommandDescription, null, true, new ArrayList<>());
+        super(Main.instance, "close", Main.instance.lang.closeCommandDescription, null, false, new ArrayList<>());
     }
 
     @Override
