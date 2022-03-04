@@ -13,7 +13,7 @@ import java.util.Collections;
 public class CheckBanCommand extends DiscordCommand {
     public CheckBanCommand() {
         super(Main.instance, "checkBan", Main.instance.lang.checkBanCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
-                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.banIDDescription, true)
+                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.banIDDescription, true)
         ));
     }
 
@@ -21,7 +21,7 @@ public class CheckBanCommand extends DiscordCommand {
     public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = context.getArgument("user_id").getAsLong();
+            id = Long.parseLong(context.getArgument("user_id").getAsString());
         } catch (Exception e) {
             sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;

@@ -17,7 +17,7 @@ import java.util.List;
 public class HistoryCommand extends DiscordCommand {
     public HistoryCommand() {
         super(Main.instance, "history", Main.instance.lang.historyCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
-                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.userIDDescription, true)
         ));
     }
 
@@ -25,7 +25,7 @@ public class HistoryCommand extends DiscordCommand {
     public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = context.getArgument("user_id").getAsLong();
+            id = Long.parseLong(context.getArgument("user_id").getAsString());
         } catch (Exception e) {
             sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;

@@ -13,7 +13,7 @@ import java.util.Collections;
 public class UnbanCommand extends DiscordCommand {
     public UnbanCommand() {
         super(Main.instance, "unban", Main.instance.lang.unbanCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
-                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.userIDDescription, true)
         ));
     }
 
@@ -21,7 +21,7 @@ public class UnbanCommand extends DiscordCommand {
     public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = context.getArgument("user_id").getAsLong();
+            id = Long.parseLong(context.getArgument("user_id").getAsString());
         } catch (Exception e) {
             sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;

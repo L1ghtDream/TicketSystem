@@ -18,7 +18,7 @@ import java.util.List;
 public class BanCommand extends DiscordCommand {
     public BanCommand() {
         super(Main.instance, "ban", Main.instance.lang.banCommandDescription, Permission.BAN_MEMBERS, true, Arrays.asList(
-                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true),
+                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.userIDDescription, true),
                 new CommandArgument(OptionType.STRING, "reason", Main.instance.lang.banReasonDescription, true)
         ));
     }
@@ -30,7 +30,7 @@ public class BanCommand extends DiscordCommand {
         String reason = context.getArgument("reason").getAsString();
 
         try {
-            id = context.getArgument("user_id").getAsLong();
+            id = Long.parseLong(context.getArgument("user_id").getAsString());
         } catch (Exception e) {
             sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;

@@ -13,7 +13,7 @@ import java.util.Collections;
 public class AddCommand extends DiscordCommand {
     public AddCommand() {
         super(Main.instance, "add", Main.instance.lang.addCommandDescription, Permission.MANAGE_CHANNEL, false, Collections.singletonList(
-                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.userIDDescription, true)
         ));
     }
 
@@ -28,7 +28,7 @@ public class AddCommand extends DiscordCommand {
 
         long id;
         try {
-            id = context.getArgument("user_id").getAsLong();
+            id = Long.parseLong(context.getArgument("user_id").getAsString());
         } catch (Exception e) {
             sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;

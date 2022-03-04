@@ -17,7 +17,7 @@ import java.util.List;
 public class TicketsCommand extends DiscordCommand {
     public TicketsCommand() {
         super(Main.instance, "tickets", Main.instance.lang.ticketsCommandDescription, Permission.ADMINISTRATOR, true, Collections.singletonList(
-                new CommandArgument(OptionType.NUMBER, "user_id", Main.instance.lang.userIDDescription, true)
+                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.userIDDescription, true)
         ));
     }
 
@@ -25,7 +25,7 @@ public class TicketsCommand extends DiscordCommand {
     public void executeGuild(CommandContext context) {
         long id;
         try {
-            id = context.getArgument("user_id").getAsLong();
+            id = Long.parseLong(context.getArgument("user_id").getAsString());
         } catch (Exception e) {
             sendMessage(context, Main.instance.jdaConfig.invalidID);
             return;
