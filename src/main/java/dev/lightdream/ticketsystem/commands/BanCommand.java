@@ -2,14 +2,17 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
-import dev.lightdream.jdaextension.dto.CommandContext;
+import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
+import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +27,7 @@ public class BanCommand extends DiscordCommand {
     }
 
     @Override
-    public void executeGuild(CommandContext context) {
+    public void executeGuild(GuildCommandContext context) {
 
         long id;
         String reason = context.getArgument("reason").getAsString();
@@ -44,48 +47,48 @@ public class BanCommand extends DiscordCommand {
 
         List<Long> ranks = new ArrayList<>();
 
-        context.getGuild()
-                .retrieveMemberById(id)
-                .queue(member -> {
-                    if (member == null) {
-                        sendMessage(context, Main.instance.jdaConfig.invalidUser);
-                        return;
-                    }
+        context.getGuild().retrieveMemberById(id).queue(member -> {
+            if (member == null) {
+                sendMessage(context, Main.instance.jdaConfig.invalidUser);
+                return;
+            }
 
-                    member.getRoles().forEach(role -> ranks.add(role.getIdLong()));
+            member.getRoles().forEach(role -> ranks.add(role.getIdLong()));
 
-                    Guild guild = context.getGuild();
+            Guild guild = context.getGuild();
 
-                    for (Long rank : ranks) {
-                        Role role = guild.getRoleById(rank);
-                        if (role == null) {
-                            continue;
-                        }
-                        try {
-                            guild.removeRoleFromMember(member, role).queue();
-                        } catch (HierarchyException e) {
-                            sendMessage(context, Main.instance.jdaConfig.cannotBan);
-                            return;
-                        }
-                    }
+            for (Long rank : ranks) {
+                Role role = guild.getRoleById(rank);
+                if (role == null) {
+                    continue;
+                }
+                try {
+                    guild.removeRoleFromMember(member, role).queue();
+                } catch (HierarchyException e) {
+                    sendMessage(context, Main.instance.jdaConfig.cannotBan);
+                    return;
+                }
+            }
 
-                    Role role = guild.getRoleById(Main.instance.config.bannedRank);
+            Role role = guild.getRoleById(Main.instance.config.bannedRank);
 
-                    if (role == null) {
-                        sendMessage(context, Main.instance.jdaConfig.invalidBannedRole);
-                        return;
-                    }
+            if (role == null) {
+                sendMessage(context, Main.instance.jdaConfig.invalidBannedRole);
+                return;
+            }
 
-                    guild.addRoleToMember(member, role).queue();
+            guild.addRoleToMember(member, role).queue();
 
-                    new BanRecord(id, context.getUser().getIdLong(), ranks, reason, System.currentTimeMillis()).save();
-                    sendMessage(context, Main.instance.jdaConfig.userBanned
-                            .parse("name", member.getEffectiveName()));
-                });
+            new BanRecord(id, context.getUser().getIdLong(), ranks, reason, System.currentTimeMillis()).save();
+            sendMessage(context, Main.instance.jdaConfig.userBanned
+                    .parse("name", member.getEffectiveName()));
+        }, new ErrorHandler().handle(ErrorResponse.UNKNOWN_USER, e -> sendMessage(context, Main.instance.jdaConfig.invalidUser))
+                .handle(ErrorResponse.UNKNOWN_MEMBER, e -> sendMessage(context, Main.instance.jdaConfig.invalidUser)));
     }
 
+
     @Override
-    public void executePrivate(CommandContext commandContext) {
+    public void executePrivate(PrivateCommandContext commandContext) {
         //Impossible
     }
 

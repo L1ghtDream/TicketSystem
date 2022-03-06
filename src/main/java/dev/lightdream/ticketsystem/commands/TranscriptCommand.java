@@ -2,7 +2,8 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
-import dev.lightdream.jdaextension.dto.CommandContext;
+import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
+import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.Ticket;
@@ -20,7 +21,7 @@ public class TranscriptCommand extends DiscordCommand {
     }
 
     @Override
-    public void executeGuild(CommandContext context) {
+    public void executeGuild(GuildCommandContext context) {
 
         int id;
         try {
@@ -51,7 +52,7 @@ public class TranscriptCommand extends DiscordCommand {
     }
 
     @Override
-    public void executePrivate(CommandContext context) {
+    public void executePrivate(PrivateCommandContext context) {
         int id;
         try {
             id = (int) context.getArgument("id").getAsLong();

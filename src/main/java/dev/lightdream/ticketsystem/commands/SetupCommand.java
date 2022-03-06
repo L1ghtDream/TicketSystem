@@ -2,8 +2,9 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.Button;
-import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
+import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.jdaextension.enums.JDAButtonType;
 import dev.lightdream.ticketsystem.Main;
 import net.dv8tion.jda.api.Permission;
@@ -17,7 +18,7 @@ public class SetupCommand extends DiscordCommand {
     }
 
     @Override
-    public void executeGuild(CommandContext context) {
+    public void executeGuild(GuildCommandContext context) {
         JdaEmbed ticket = Main.instance.jdaConfig.ticket.clone();
         Main.instance.config.ticketTypes.forEach(ticketType ->
                 ticket.buttons.add(new Button(JDAButtonType.PRIMARY, ticketType.id, ticketType.name)));
@@ -33,7 +34,7 @@ public class SetupCommand extends DiscordCommand {
     }
 
     @Override
-    public void executePrivate(CommandContext commandContext) {
+    public void executePrivate(PrivateCommandContext commandContext) {
 
     }
 

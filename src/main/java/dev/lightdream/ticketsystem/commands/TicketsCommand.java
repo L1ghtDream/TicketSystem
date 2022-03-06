@@ -2,8 +2,9 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
-import dev.lightdream.jdaextension.dto.CommandContext;
 import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
+import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import net.dv8tion.jda.api.Permission;
@@ -22,7 +23,7 @@ public class TicketsCommand extends DiscordCommand {
     }
 
     @Override
-    public void executeGuild(CommandContext context) {
+    public void executeGuild(GuildCommandContext context) {
         long id;
         try {
             id = Long.parseLong(context.getArgument("user_id").getAsString());
@@ -53,7 +54,7 @@ public class TicketsCommand extends DiscordCommand {
     }
 
     @Override
-    public void executePrivate(CommandContext commandContext) {
+    public void executePrivate(PrivateCommandContext commandContext) {
 
     }
 
