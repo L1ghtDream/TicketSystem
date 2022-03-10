@@ -48,7 +48,7 @@ public class TranscriptCommand extends DiscordCommand {
             sendMessage(context, Main.instance.jdaConfig.notAllowedToAccessTranscript);
             return;
         }
-        transcript.send(context.getUser());
+        transcript.send(context, privateResponse);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class TranscriptCommand extends DiscordCommand {
             sendMessage(context, Main.instance.jdaConfig.notAllowedToAccessTranscript);
             return;
         }
-        transcript.send(context.getUser());
+        transcript.send(context, privateResponse);
     }
 
     @Override

@@ -3,12 +3,11 @@ package dev.lightdream.ticketsystem.dto;
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
 import dev.lightdream.databasemanager.dto.DatabaseEntry;
+import dev.lightdream.jdaextension.dto.context.CommandContext;
 import dev.lightdream.ticketsystem.Main;
 import lombok.SneakyThrows;
 import me.kaimu.hastebin.Hastebin;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.exceptions.ErrorHandler;
-import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +40,7 @@ public class Transcript extends DatabaseEntry {
     }
 
     @SneakyThrows
-    public void send(User user) {
+    public void send(CommandContext context, boolean privateMessage) {
         Hastebin hastebin = new Hastebin();
 
         StringBuilder text = new StringBuilder();
@@ -52,17 +51,11 @@ public class Transcript extends DatabaseEntry {
 
         String url = hastebin.post(text.toString(), false);
 
-        user.openPrivateChannel()
-                .queue(channel -> channel.sendMessageEmbeds(Main.instance.jdaConfig.transcript
-                                .parse("id", String.valueOf(ticketID))
-                                .parse("url", url)
-                                .build().build())
-                        .queue(null,
-                                new ErrorHandler().handle(ErrorResponse.CANNOT_SEND_TO_USER,
-                                        e -> {
-                                            //empty
-                                        })
-                        )
-                );
+        context.sendMessage(
+                Main.instance.jdaConfig.transcript
+                        .parse("id", String.valueOf(ticketID))
+                        .parse("url", url),
+                privateMessage
+        );
     }
 }
