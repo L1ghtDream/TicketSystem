@@ -79,7 +79,8 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "ID: %id%\n" +
                     "Banned By: %banned_by_name%\n" +
                     "Banned By ID: %banned_by_id%\n" +
-                    "Reason: %reason%",
+                    "Reason: %reason%\n" +
+                    "Ban Date: %date%",
             new ArrayList<>(),
             new ArrayList<>()
     );

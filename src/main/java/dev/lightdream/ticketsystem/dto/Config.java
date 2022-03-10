@@ -31,4 +31,6 @@ public class Config {
     public Long bannedRank = 0L;
     public Long managerPingRank = 0L;
 
+    public String dateFormat = "HH:mm dd.MMM.yyyy";
+
 }

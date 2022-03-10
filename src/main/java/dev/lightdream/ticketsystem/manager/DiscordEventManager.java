@@ -3,6 +3,7 @@ package dev.lightdream.ticketsystem.manager;
 import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
+import dev.lightdream.ticketsystem.Utils;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import net.dv8tion.jda.api.Permission;
@@ -83,6 +84,7 @@ public class DiscordEventManager extends ListenerAdapter {
                                 .parse("banned_by_name", bannedBy.getName())
                                 .parse("banned_by_id", bannedBy.getId())
                                 .parse("reason", ban.reason)
+                                .parse("date", Utils.msToDate(ban.timestamp))
                                 .build().build()).queue());
 
                 ((MessageChannel) textChannel).sendMessage("<@" + ban.bannedBy + ">").queue(message ->
