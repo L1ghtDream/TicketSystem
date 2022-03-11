@@ -2,20 +2,22 @@ package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.logger.Debugger;
+import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.Utils;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import dev.lightdream.ticketsystem.dto.Ticket;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DiscordEventManager extends ListenerAdapter {
@@ -179,6 +181,43 @@ public class DiscordEventManager extends ListenerAdapter {
         } catch (Throwable t) {
             //Empty
         }
+    }
+
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        BanRecord banRecord = Main.instance.databaseManager.getBan(event.getMember().getIdLong());
+        if (banRecord == null) {
+            return;
+        }
+
+        Member member = event.getMember();
+        Guild guild = event.getGuild();
+
+        List<Long> ranks = new ArrayList<>();
+
+        member.getRoles().forEach(role -> ranks.add(role.getIdLong()));
+
+        for (Long rank : ranks) {
+            Role role = guild.getRoleById(rank);
+            if (role == null) {
+                continue;
+            }
+            try {
+                guild.removeRoleFromMember(member, role).queue();
+            } catch (HierarchyException e) {
+                Logger.error(Main.instance.jdaConfig.cannotBan.description);
+                return;
+            }
+        }
+
+        Role role = guild.getRoleById(Main.instance.config.bannedRank);
+
+        if (role == null) {
+            Logger.error(Main.instance.jdaConfig.invalidBannedRole.description);
+            return;
+        }
+
+        guild.addRoleToMember(member, role).queue();
     }
 }
 
