@@ -23,6 +23,7 @@ import dev.lightdream.ticketsystem.manager.DatabaseManager;
 import dev.lightdream.ticketsystem.manager.DiscordEventManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -57,7 +58,9 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         databaseManager = new DatabaseManager(this);
 
         try {
-            bot = JDABuilder.createDefault(jdaConfig.token).build();
+            bot = JDABuilder.createDefault(jdaConfig.token)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    .build();
         } catch (LoginException e) {
             Logger.error("The bot token seems to be missing or incorrect, please check if it!");
             return;

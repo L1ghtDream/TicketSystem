@@ -185,10 +185,16 @@ public class DiscordEventManager extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+
+        Debugger.info(event.getMember() + " has joined");
+
         BanRecord banRecord = Main.instance.databaseManager.getBan(event.getMember().getIdLong());
         if (banRecord == null) {
+            Debugger.info(event.getMember() + " is not banned");
             return;
         }
+
+        Debugger.info(event.getMember() + " is banned");
 
         Member member = event.getMember();
         Guild guild = event.getGuild();

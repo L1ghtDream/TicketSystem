@@ -6,7 +6,7 @@
 
     <groupId>dev.lightdrea</groupId>
     <artifactId>TicketSystem</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.7</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>dev.lightdream</groupId>
             <artifactId>DatabaseManager</artifactId>
-            <version>LATEST</version>
+            <version>2.5</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
