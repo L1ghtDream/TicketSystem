@@ -8,6 +8,7 @@ import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BanRecord;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.text.SimpleDateFormat;
@@ -18,38 +19,30 @@ import java.util.List;
 public class HistoryCommand extends DiscordCommand {
     public HistoryCommand() {
         super(Main.instance, "history", Main.instance.lang.historyCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
-                new CommandArgument(OptionType.STRING, "user_id", Main.instance.lang.userIDDescription, true)
+                new CommandArgument(OptionType.USER, "user", Main.instance.lang.userIDDescription, true)
         ));
     }
 
     @Override
     public void executeGuild(GuildCommandContext context) {
-        long id;
-        try {
-            id = Long.parseLong(context.getArgument("user_id").getAsString());
-        } catch (Exception e) {
-            sendMessage(context, Main.instance.jdaConfig.invalidID);
-            return;
-        }
+        User user = context.getArgument("user").getAsUser();
 
-        Main.instance.bot.retrieveUserById(id).queue(user -> {
-            List<BanRecord> bans = Main.instance.databaseManager.getPastBans(id);
-            JDAEmbed embed = Main.instance.jdaConfig.bans.clone();
-            bans.forEach(ban -> {
-                System.out.println(ban.reason);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                Date date = new Date(ban.timestamp);
+        List<BanRecord> bans = Main.instance.databaseManager.getPastBans(user.getIdLong());
+        JDAEmbed embed = Main.instance.jdaConfig.bans.clone();
+        bans.forEach(ban -> {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            Date date = new Date(ban.timestamp);
 
-                embed.description += Main.instance.jdaConfig.bansEntry
-                        .replace("%id%", String.valueOf(ban.id))
-                        .replace("%reason%", ban.reason)
-                        .replace("%date%", dateFormat.format(date));
-                embed.description += "\n";
-            });
-
-            sendMessage(context, embed
-                    .parse("name", user.getName()));
+            embed.description += Main.instance.jdaConfig.bansEntry
+                    .replace("%id%", String.valueOf(ban.id))
+                    .replace("%reason%", ban.reason)
+                    .replace("%date%", dateFormat.format(date));
+            embed.description += "\n";
         });
+
+        sendMessage(context, embed
+                .parse("name", user.getName()));
+
     }
 
     @Override

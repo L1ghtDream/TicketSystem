@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.Collections;
 
-public class BanDetails extends DiscordCommand {
-    public BanDetails() {
+public class BanDetailsCommand extends DiscordCommand {
+    public BanDetailsCommand() {
         super(Main.instance, "banDetails", Main.instance.lang.banDetailsCommandDescription, Permission.BAN_MEMBERS, true, Collections.singletonList(
                 new CommandArgument(OptionType.INTEGER, "id", Main.instance.lang.banIDDescription, true)
         ));

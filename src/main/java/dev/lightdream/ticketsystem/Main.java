@@ -69,7 +69,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         discordCommandManager = new DiscordCommandManager(this, Arrays.asList(
                 new HelpCommand(this),
                 new StatsCommand(this),
-                new BanDetails(),
+                new BanDetailsCommand(),
                 new CloseCommand(),
                 new BanCommand(),
                 new CheckBanCommand(),
