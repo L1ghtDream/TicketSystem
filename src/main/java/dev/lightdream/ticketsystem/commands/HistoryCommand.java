@@ -2,7 +2,7 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
-import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
@@ -34,7 +34,7 @@ public class HistoryCommand extends DiscordCommand {
 
         Main.instance.bot.retrieveUserById(id).queue(user -> {
             List<BanRecord> bans = Main.instance.databaseManager.getPastBans(id);
-            JdaEmbed embed = Main.instance.jdaConfig.bans.clone();
+            JDAEmbed embed = Main.instance.jdaConfig.bans.clone();
             bans.forEach(ban -> {
                 System.out.println(ban.reason);
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");

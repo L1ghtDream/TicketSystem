@@ -1,7 +1,7 @@
 package dev.lightdream.ticketsystem.manager;
 
-import dev.lightdream.databasemanager.dto.LambdaExecutor;
-import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
+import dev.lightdream.lambda.LambdaExecutor;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.dto.BlacklistRecord;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class TicketManager {
 
-    public static JdaEmbed closeTicket(TextChannel textChannel, @NotNull User user) {
+    public static JDAEmbed closeTicket(TextChannel textChannel, @NotNull User user) {
         Ticket ticket = Main.instance.databaseManager.getTicket(textChannel.getIdLong());
 
         if (ticket == null) {
@@ -25,7 +25,7 @@ public class TicketManager {
         return _closeTicket(textChannel, ticket, user);
     }
 
-    private static JdaEmbed _closeTicket(TextChannel textChannel, @NotNull Ticket ticket, @NotNull User user) {
+    private static JDAEmbed _closeTicket(TextChannel textChannel, @NotNull Ticket ticket, @NotNull User user) {
         new java.util.Timer().schedule(new java.util.TimerTask() {
             @Override
             public void run() {
@@ -43,7 +43,9 @@ public class TicketManager {
     }
 
 
-    public static void createTicket(Guild guild, Member member, TicketType ticketType, LambdaExecutor executeOnChannel, LambdaExecutor replyExecutor) {
+    public static void createTicket(Guild guild, Member member, TicketType ticketType,
+                                    LambdaExecutor.NoReturnLambdaExecutor<TextChannel> executeOnChannel,
+                                    LambdaExecutor.NoReturnLambdaExecutor<JDAEmbed> replyExecutor) {
         Debugger.info("Creating ticket");
         if (guild == null) {
             return;

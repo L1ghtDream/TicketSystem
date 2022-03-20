@@ -1,8 +1,8 @@
 package dev.lightdream.ticketsystem.dto;
 
-import dev.lightdream.jdaextension.dto.Button;
-import dev.lightdream.jdaextension.dto.JdaEmbed;
-import dev.lightdream.jdaextension.dto.JdaField;
+import dev.lightdream.jdaextension.dto.JDAButton;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
+import dev.lightdream.jdaextension.dto.JDAField;
 import dev.lightdream.jdaextension.enums.JDAButtonType;
 
 import java.util.ArrayList;
@@ -11,28 +11,28 @@ import java.util.Arrays;
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
-    public JdaEmbed ticket = new JdaEmbed(
+    public JDAEmbed ticket = new JDAEmbed(
             0,
             0,
             0,
             "Create Ticket",
             "",
             "**Select the ticket type that you want to create**",
-            Arrays.asList(new JdaField("Warnings!",
+            Arrays.asList(new JDAField("Warnings!",
                     "We do not solve any problems related to any lost or stolen items!\n" +
                             "All the complains are made on https://original.gg/complain!",
                     true)),
             new ArrayList<>()
     );
 
-    public JdaEmbed unbanTicket = new JdaEmbed(
+    public JDAEmbed unbanTicket = new JDAEmbed(
             0,
             0,
             0,
             "Create Unban Ticket",
             "",
             "",
-            Arrays.asList(new JdaField("Warnings!",
+            Arrays.asList(new JDAField("Warnings!",
                     "If you have been banned for advertising you will not be able to be unbanned!\n" +
                             "If you have been banned as a result of your account being compromised you will need to provide proof that you have secured your account",
                     true)),
@@ -40,7 +40,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
     );
 
 
-    public JdaEmbed ticketGreeting = new JdaEmbed(
+    public JDAEmbed ticketGreeting = new JDAEmbed(
             0,
             255,
             0,
@@ -50,11 +50,11 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "Please state your problem bellow!\n" +
                     "If you need the help of a manager please press the button bellow!",
             new ArrayList<>(),
-            Arrays.asList(new Button(JDAButtonType.DANGER, "manager", "\uD83C\uDF93 Manager"),
-                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"))
+            Arrays.asList(new JDAButton(JDAButtonType.DANGER, "manager", "\uD83C\uDF93 Manager"),
+                    new JDAButton(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"))
     );
 
-    public JdaEmbed unbanTicketGreeting = new JdaEmbed(
+    public JDAEmbed unbanTicketGreeting = new JDAEmbed(
             0,
             255,
             0,
@@ -64,12 +64,12 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "The staff member that have banned you have been notified.",
             new ArrayList<>(),
             Arrays.asList(
-                    new Button(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"),
-                    new Button(JDAButtonType.PRIMARY, "unban", "\uD83D\uDD13 Unban")
+                    new JDAButton(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"),
+                    new JDAButton(JDAButtonType.PRIMARY, "unban", "\uD83D\uDD13 Unban")
             )
     );
 
-    public JdaEmbed unbanDetails = new JdaEmbed(
+    public JDAEmbed unbanDetails = new JDAEmbed(
             255,
             0,
             0,
@@ -85,37 +85,37 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             new ArrayList<>()
     );
 
-    public JdaEmbed closingTicket = JdaEmbed.red(
+    public JDAEmbed closingTicket = JDAEmbed.red(
             "Ticket",
             "This ticket will be closed in 5 seconds"
     );
 
-    public JdaEmbed invalidID = JdaEmbed.red(
+    public JDAEmbed invalidID = JDAEmbed.red(
             "Ban",
             "This is not a valid discord ID"
     );
 
-    public JdaEmbed alreadyBanned = JdaEmbed.red(
+    public JDAEmbed alreadyBanned = JDAEmbed.red(
             "Ban",
             "User is already banned"
     );
 
-    public JdaEmbed invalidUser = JdaEmbed.red(
+    public JDAEmbed invalidUser = JDAEmbed.red(
             "Users",
             "This is not a valid user"
     );
 
-    public JdaEmbed invalidBannedRole = JdaEmbed.red(
+    public JDAEmbed invalidBannedRole = JDAEmbed.red(
             "Roles",
             "The banned role is invalid please check it"
     );
 
-    public JdaEmbed userBanned = JdaEmbed.green(
+    public JDAEmbed userBanned = JDAEmbed.green(
             "Roles",
             "The user %name% has been banned"
     );
 
-    public JdaEmbed helpEmbed = JdaEmbed.black(
+    public JDAEmbed helpEmbed = JDAEmbed.black(
             "Help",
             "**General**\n" +
                     "/help\n" +
@@ -137,132 +137,132 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "<> - Optional / Contextual arguments"
     );
 
-    public JdaEmbed setupFinished = JdaEmbed.green(
+    public JDAEmbed setupFinished = JDAEmbed.green(
             "Setup",
             "Setup finished"
     );
 
-    public JdaEmbed notBanned = JdaEmbed.red(
+    public JDAEmbed notBanned = JDAEmbed.red(
             "Ban",
             "User is not banned"
     );
 
-    public JdaEmbed unBanned = JdaEmbed.green(
+    public JDAEmbed unBanned = JDAEmbed.green(
             "UnBan",
             "User %name% is now unbanned. %roles_1%/%roles_2% roles have been restored"
     );
 
 
-    public JdaEmbed notTicket = JdaEmbed.red(
+    public JDAEmbed notTicket = JDAEmbed.red(
             "Ticket",
             "This chanel is not a valid ticket channel"
     );
 
-    public JdaEmbed alreadyPingedManager = JdaEmbed.red(
+    public JDAEmbed alreadyPingedManager = JDAEmbed.red(
             "Ticket",
             "You have already pinged the manager on this ticket. Please be patient we will answer your problem as soon as possible"
     );
 
-    public JdaEmbed error = JdaEmbed.red(
+    public JDAEmbed error = JDAEmbed.red(
             "Error",
             "An error occurred while performing this action. Please contact the author in regards to this."
     );
 
-    public JdaEmbed addedToTicket = JdaEmbed.green(
+    public JDAEmbed addedToTicket = JDAEmbed.green(
             "Tickets",
             "Added %name% to this ticket."
     );
 
-    public JdaEmbed cannotBan = JdaEmbed.red(
+    public JDAEmbed cannotBan = JDAEmbed.red(
             "Ban",
             "I can not ban this use because he has a higher rank then me."
     );
 
-    public JdaEmbed cannotUnban = JdaEmbed.red(
+    public JDAEmbed cannotUnban = JDAEmbed.red(
             "Ban",
             "I can not unban this use because he has a higher rank then me."
     );
 
-    public JdaEmbed invalidTicketID = JdaEmbed.red(
+    public JDAEmbed invalidTicketID = JDAEmbed.red(
             "Ticket",
             "This is not a valid ticket id."
     );
 
-    public JdaEmbed invalidBanID = JdaEmbed.red(
+    public JDAEmbed invalidBanID = JDAEmbed.red(
             "Bans",
             "This is not a valid ban id."
     );
 
-    public JdaEmbed closedTicket = JdaEmbed.green(
+    public JDAEmbed closedTicket = JDAEmbed.green(
             "Ticket",
             "Your ticket has been closed. You can access your transcript by using the command `/transcript %id%`."
     );
 
-    public JdaEmbed notAllowedToAccessTranscript = JdaEmbed.red(
+    public JDAEmbed notAllowedToAccessTranscript = JDAEmbed.red(
             "Transcript",
             "You are not allowed to access this transcript."
     );
 
-    public JdaEmbed transcript = JdaEmbed.black(
+    public JDAEmbed transcript = JDAEmbed.black(
             "Transcript",
             "You can access the transcript with id %id% at %url%."
     );
 
-    public JdaEmbed tickets = JdaEmbed.green(
+    public JDAEmbed tickets = JDAEmbed.green(
             "%name%'s Tickets (last 10)",
             "You can use /transcript [id] to see the transcript on one specific ticket\n"
     );
 
     public String ticketsEntry = "[%id%] Ticket %type% on date %date%";
 
-    public JdaEmbed bans = JdaEmbed.green(
+    public JDAEmbed bans = JDAEmbed.green(
             "%name%'s Bans (last 10)",
             "You can use /banDetails [id] to see more about one specific ban\n"
     );
 
     public String bansEntry = "[%id%] Ban on date %date% for `%reason%`";
 
-    public JdaEmbed blacklisted = JdaEmbed.red(
+    public JDAEmbed blacklisted = JDAEmbed.red(
             "Tickets",
             "You have been blacklisted from create any ticket"
     );
 
-    public JdaEmbed alreadyHaveTicket = JdaEmbed.red(
+    public JDAEmbed alreadyHaveTicket = JDAEmbed.red(
             "Tickets",
             "You already have a ticket of this type. I have mentioned you on the channel."
     );
 
-    public JdaEmbed ticketCreated = JdaEmbed.green(
+    public JDAEmbed ticketCreated = JDAEmbed.green(
             "Tickets",
             "We have created your ticket."
     );
 
-    public JdaEmbed invalidAction = JdaEmbed.red(
+    public JDAEmbed invalidAction = JDAEmbed.red(
             "Commands",
             "This is not a valid action."
     );
 
-    public JdaEmbed blacklistAdded = JdaEmbed.green(
+    public JDAEmbed blacklistAdded = JDAEmbed.green(
             "Blacklist",
             "User %user% has been added to the blacklist."
     );
 
-    public JdaEmbed blacklistRemoved = JdaEmbed.green(
+    public JDAEmbed blacklistRemoved = JDAEmbed.green(
             "Blacklist",
             "User %user% has been added to the blacklist."
     );
 
-    public JdaEmbed blacklistInfo = JdaEmbed.black(
+    public JDAEmbed blacklistInfo = JDAEmbed.black(
             "Blacklist",
             "%user%'s blacklist status is %status%."
     );
 
-    public JdaEmbed alreadyBlacklisted = JdaEmbed.red(
+    public JDAEmbed alreadyBlacklisted = JDAEmbed.red(
             "Blacklist",
             "This user is already blacklisted"
     );
 
-    public JdaEmbed notBlacklisted = JdaEmbed.red(
+    public JDAEmbed notBlacklisted = JDAEmbed.red(
             "Blacklist",
             "This user is not blacklisted"
     );

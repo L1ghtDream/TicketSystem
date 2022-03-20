@@ -9,8 +9,8 @@ import dev.lightdream.filemanager.FileManagerMain;
 import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.commands.HelpCommand;
 import dev.lightdream.jdaextension.commands.commands.StatsCommand;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.jdaextension.dto.JDALang;
-import dev.lightdream.jdaextension.dto.JdaEmbed;
 import dev.lightdream.jdaextension.managers.DiscordCommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
@@ -52,7 +52,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
         instance = this;
 
-        fileManager = new FileManager(this, FileManager.PersistType.YAML);
+        fileManager = new FileManager(this);
         loadConfigs();
 
         databaseManager = new DatabaseManager(this);
@@ -141,7 +141,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     }
 
     @Override
-    public JdaEmbed getHelpEmbed() {
+    public JDAEmbed getHelpEmbed() {
         return jdaConfig.helpEmbed;
     }
 

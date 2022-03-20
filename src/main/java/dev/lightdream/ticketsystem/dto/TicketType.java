@@ -1,12 +1,7 @@
 package dev.lightdream.ticketsystem.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class TicketType {
 
     public String name;
@@ -14,4 +9,13 @@ public class TicketType {
     public Long categoryID;
     public List<Long> associatedRanks;
 
+    public TicketType() {
+    }
+
+    public TicketType(String name, String id, Long categoryID, List<Long> associatedRanks) {
+        this.name = name;
+        this.id = id;
+        this.categoryID = categoryID;
+        this.associatedRanks = associatedRanks;
+    }
 }

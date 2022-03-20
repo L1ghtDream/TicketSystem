@@ -4,8 +4,8 @@ import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
 import dev.lightdream.databasemanager.dto.DatabaseEntry;
 import dev.lightdream.jdaextension.dto.context.CommandContext;
+import dev.lightdream.lambda.LambdaExecutor;
 import dev.lightdream.ticketsystem.Main;
-import lombok.SneakyThrows;
 import me.kaimu.hastebin.Hastebin;
 import net.dv8tion.jda.api.entities.User;
 
@@ -39,23 +39,24 @@ public class Transcript extends DatabaseEntry {
         save();
     }
 
-    @SneakyThrows
     public void send(CommandContext context, boolean privateMessage) {
-        Hastebin hastebin = new Hastebin();
+        LambdaExecutor.LambdaCatch.NoReturnLambdaCatch.executeCatch(() -> {
+            Hastebin hastebin = new Hastebin();
 
-        StringBuilder text = new StringBuilder();
-        messages.forEach(message -> {
-            text.append(message);
-            text.append("\n");
+            StringBuilder text = new StringBuilder();
+            messages.forEach(message -> {
+                text.append(message);
+                text.append("\n");
+            });
+
+            String url = hastebin.post(text.toString(), false);
+
+            context.sendMessage(
+                    Main.instance.jdaConfig.transcript
+                            .parse("id", String.valueOf(ticketID))
+                            .parse("url", url),
+                    privateMessage
+            );
         });
-
-        String url = hastebin.post(text.toString(), false);
-
-        context.sendMessage(
-                Main.instance.jdaConfig.transcript
-                        .parse("id", String.valueOf(ticketID))
-                        .parse("url", url),
-                privateMessage
-        );
     }
 }

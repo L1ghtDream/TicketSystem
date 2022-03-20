@@ -1,6 +1,6 @@
 package dev.lightdream.ticketsystem.manager;
 
-import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
@@ -34,7 +34,7 @@ public class DiscordEventManager extends ListenerAdapter {
         Conditions:
         if (id.equalsIgnoreCase("close-ticket")) {
             Debugger.info("IF-ELSE 1");
-            JdaEmbed embed = TicketManager.closeTicket(event.getTextChannel(), event.getUser());
+            JDAEmbed embed = TicketManager.closeTicket(event.getTextChannel(), event.getUser());
             event.getTextChannel().sendMessageEmbeds(embed.build().build()).queue();
             event.deferEdit().queue();
         } else if (id.equalsIgnoreCase("manager")) {
@@ -77,10 +77,10 @@ public class DiscordEventManager extends ListenerAdapter {
                 Main.instance.jdaConfig.unbanTicketGreeting
                         .parse("name", user.getName())
                         .parse("avatar", avatar)
-                        .buildMessageAction((MessageChannel) textChannel).queue();
+                        .buildMessageAction(textChannel).queue();
 
                 Main.instance.bot.retrieveUserById(ban.bannedBy).queue(bannedBy ->
-                        ((MessageChannel) textChannel).sendMessageEmbeds(Main.instance.jdaConfig.unbanDetails
+                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.unbanDetails
                                 .parse("name", user.getName())
                                 .parse("id", user.getId())
                                 .parse("banned_by_name", bannedBy.getName())
@@ -89,14 +89,10 @@ public class DiscordEventManager extends ListenerAdapter {
                                 .parse("date", Utils.msToDate(ban.timestamp))
                                 .build().build()).queue());
 
-                ((MessageChannel) textChannel).sendMessage("<@" + ban.bannedBy + ">").queue(message ->
+                textChannel.sendMessage("<@" + ban.bannedBy + ">").queue(message ->
                         message.delete().queue());
 
-                return null;
-            }, embed -> {
-                event.replyEmbeds(((JdaEmbed) embed).build().build()).setEphemeral(true).queue();
-                return null;
-            });
+            }, embed -> event.replyEmbeds(embed.build().build()).setEphemeral(true).queue());
         } else if (id.equalsIgnoreCase("unban")) {
             Debugger.info("IF-ELSE 4");
 
@@ -137,13 +133,8 @@ public class DiscordEventManager extends ListenerAdapter {
                     Main.instance.jdaConfig.ticketGreeting
                             .parse("name", user.getName())
                             .parse("avatar", avatar)
-                            .buildMessageAction((MessageChannel) textChannel).queue();
-                    //((MessageChannel) textChannel).sendMessageEmbeds(((JdaEmbed) embed).build().build()).setEphemeral(true).queue();
-                    return null;
-                }, embed -> {
-                    event.replyEmbeds(((JdaEmbed) embed).build().build()).setEphemeral(true).queue();
-                    return null;
-                });
+                            .buildMessageAction(textChannel).queue();
+                }, embed -> event.replyEmbeds(embed.build().build()).setEphemeral(true).queue());
             });
         }
     }

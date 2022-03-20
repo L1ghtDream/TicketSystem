@@ -2,7 +2,7 @@ package dev.lightdream.ticketsystem.commands;
 
 import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
-import dev.lightdream.jdaextension.dto.JdaEmbed;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
@@ -34,7 +34,7 @@ public class TicketsCommand extends DiscordCommand {
 
         Main.instance.bot.retrieveUserById(id).queue(user -> {
             List<Ticket> tickets = Main.instance.databaseManager.getPastTickets(id);
-            JdaEmbed embed = Main.instance.jdaConfig.tickets.clone();
+            JDAEmbed embed = Main.instance.jdaConfig.tickets.clone();
             tickets.forEach(ticket -> {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 Date date = new Date(ticket.timestamp);
