@@ -11,6 +11,8 @@ import java.util.Arrays;
 @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
+    public long botID = 946512611896344637L;
+
     public JDAEmbed ticket = new JDAEmbed(
             0,
             0,
@@ -269,5 +271,15 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public String blacklistStatusTrue = "blacklisted";
     public String blacklistStatusFalse = "not blacklisted";
+
+    public JDAEmbed inactiveTicket = JDAEmbed.red(
+            "Inactive Ticket",
+            "This ticket will be closed in 1 hour if there are not messages by then."
+    );
+
+    public JDAEmbed timeLeft = JDAEmbed.red(
+            "Inactive Ticket",
+            "This tickets has a left %h%h %m%m %m%m."
+    );
 
 }

@@ -10,6 +10,7 @@ import dev.lightdream.ticketsystem.dto.Ticket;
 import dev.lightdream.ticketsystem.dto.Transcript;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
@@ -96,6 +97,13 @@ public class DatabaseManager extends ProgrammaticHikariDatabaseManager {
                 .stream()
                 .findAny()
                 .orElse(null);
+    }
+
+    public List<Ticket> getOpenTickets() {
+        return new ArrayList<>(
+                get(Ticket.class).query(new QueryConstrains().equals("active", true))
+                        .query()
+        );
     }
 
 }

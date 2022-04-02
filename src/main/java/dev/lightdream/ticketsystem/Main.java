@@ -21,6 +21,7 @@ import dev.lightdream.ticketsystem.dto.JDAConfig;
 import dev.lightdream.ticketsystem.dto.Lang;
 import dev.lightdream.ticketsystem.manager.DatabaseManager;
 import dev.lightdream.ticketsystem.manager.DiscordEventManager;
+import dev.lightdream.ticketsystem.manager.ScheduleManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -43,6 +44,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     public DatabaseManager databaseManager;
     public DiscordCommandManager discordCommandManager;
     public DiscordEventManager discordEventManager;
+    public ScheduleManager scheduleManager;
 
     public JDA bot;
 
@@ -79,9 +81,11 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
                 new TicketsCommand(),
                 new TranscriptCommand(),
                 new BlackListCommand(),
+                new DebugCommand(),
                 new SetupCommand()
         ));
         discordEventManager = new DiscordEventManager(this);
+        scheduleManager = new ScheduleManager();
 
         Logger.good("Ticket System Bot (by https://github.com/L1ghtDream) has started!");
 
