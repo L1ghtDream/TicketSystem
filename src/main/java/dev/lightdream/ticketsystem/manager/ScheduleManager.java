@@ -23,11 +23,14 @@ public class ScheduleManager {
                                        LambdaExecutor.NoReturnLambdaExecutor<Long> defaultLambda) {
         long lastMessageID = textChannel.getLatestMessageIdLong();
         textChannel.retrieveMessageById(lastMessageID).queue(message -> {
+            long timeLeft = OffsetDateTime.now().minusHours(24).until(message.getTimeCreated(), ChronoUnit.SECONDS);
+
             if (message.getEmbeds().size() == 0) {
                 if (message.getTimeCreated().isBefore(OffsetDateTime.now().minusHours(23))) {
                     warnLambda.execute();
                 }
             } else {
+                timeLeft -= 23 * 60 * 60;
                 User botUser = Main.instance.bot.getUserById(Main.instance.jdaConfig.botID);
                 if (botUser == null) {
                     Logger.warn("Bot id is not valid please make sure it is set correctly to use automatic ticket closing");
@@ -35,14 +38,15 @@ public class ScheduleManager {
                 }
 
                 if (message.getAuthor().getIdLong() == Main.instance.jdaConfig.botID) {
-                    if (message.getTimeCreated().isBefore(OffsetDateTime.now().minusDays(1))) {
+                    if (message.getTimeCreated().isBefore(OffsetDateTime.now().minusHours(1))) {
                         closeLambda.execute(botUser);
                     }
                 }
             }
 
-            defaultLambda.execute(OffsetDateTime.now().minusHours(24).until(message.getTimeCreated(), ChronoUnit.SECONDS));
+            defaultLambda.execute(timeLeft);
 
+        }, error -> {
         });
     }
 

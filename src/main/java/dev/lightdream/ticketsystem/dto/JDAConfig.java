@@ -279,7 +279,7 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public JDAEmbed timeLeft = JDAEmbed.red(
             "Inactive Ticket",
-            "This tickets has a left %h%h %m%m %m%m."
+            "This tickets has a left %h%h %m%m %s%s."
     );
 
 }
