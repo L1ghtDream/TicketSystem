@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 
 import java.util.ArrayList;
@@ -34,9 +35,11 @@ public class BanCommand extends DiscordCommand {
         List<Long> ranks = new ArrayList<>();
         Member member = context.getArgument("user").getAsMember();
 
-        String durationString = context.getArgument("duration").getAsString();
+        OptionMapping durationOption = context.getArgument("duration");
         long duration = 0L;
-        if (!durationString.equals("")) {
+
+        if (durationOption != null) {
+            String durationString = durationOption.getAsString();
             duration = LambdaExecutor.LambdaCatch.ReturnLambdaCatch.executeCatch(() -> {
                 List<String> digits = Arrays.asList(durationString.split("[^0-9]+"));
                 String unit = durationString.substring(durationString.length() - 1);
@@ -70,6 +73,7 @@ public class BanCommand extends DiscordCommand {
                 return -1L;
             });
         }
+
         if (duration == -1) {
             return;
         }
