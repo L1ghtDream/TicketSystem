@@ -107,6 +107,9 @@ public class BanRecord extends DatabaseEntry {
     }
 
     public boolean isApplicable() {
+        if(duration == 0) {
+            return true;
+        }
         return System.currentTimeMillis() <= timestamp + duration;
     }
 
