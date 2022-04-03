@@ -3,11 +3,15 @@ package dev.lightdream.ticketsystem.dto;
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
 import dev.lightdream.databasemanager.dto.DatabaseEntry;
+import dev.lightdream.jdaextension.dto.JDAEmbed;
+import dev.lightdream.jdaextension.dto.context.CommandContext;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
+import dev.lightdream.ticketsystem.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 
 import java.util.List;
@@ -28,8 +32,10 @@ public class BanRecord extends DatabaseEntry {
     public Long timestamp;
     @DatabaseField(columnName = "active")
     public boolean active;
+    @DatabaseField(columnName = "duration")
+    public Long duration; //0 for permanent
 
-    public BanRecord(Long user, Long bannedBy, List<Long> ranks, String reason, Long timestamp) {
+    public BanRecord(Long user, Long bannedBy, List<Long> ranks, String reason, Long timestamp, Long duration) {
         super(Main.instance);
         this.user = user;
         this.bannedBy = bannedBy;
@@ -37,6 +43,7 @@ public class BanRecord extends DatabaseEntry {
         this.reason = reason;
         this.timestamp = timestamp;
         this.active = true;
+        this.duration = duration;
     }
 
     @SuppressWarnings("unused")
@@ -73,7 +80,11 @@ public class BanRecord extends DatabaseEntry {
                         }
 
                         try {
-                            guild.addRoleToMember(member, role).queue();
+                            guild.addRoleToMember(member, role).queue(s -> {
+
+                            }, e -> {
+
+                            });
                         } catch (HierarchyException e) {
                             textChannel.sendMessageEmbeds(Main.instance.jdaConfig.cannotUnban.build().build()).queue();
                             return;
@@ -94,4 +105,36 @@ public class BanRecord extends DatabaseEntry {
         save();
         return true;
     }
+
+    public boolean isApplicable() {
+        return System.currentTimeMillis() <= timestamp + duration;
+    }
+
+    public void sendBanDetails(TextChannel textChannel) {
+        Main.instance.bot.retrieveUserById(this.bannedBy).queue(bannedBy ->
+                Main.instance.bot.retrieveUserById(this.user).queue(user ->
+                        textChannel.sendMessageEmbeds(getJDAEmbedDetails(user, bannedBy).build().build()).queue()
+                )
+        );
+    }
+
+    public void sendBanDetails(CommandContext context, boolean privateMessage) {
+        Main.instance.bot.retrieveUserById(this.bannedBy).queue(bannedBy ->
+                Main.instance.bot.retrieveUserById(this.user).queue(user ->
+                        context.sendMessage(getJDAEmbedDetails(user, bannedBy), privateMessage)
+                )
+        );
+    }
+
+    public JDAEmbed getJDAEmbedDetails(User user, User bannedBy) {
+        return Main.instance.jdaConfig.unbanDetails
+                .parse("name", user.getName())
+                .parse("id", user.getId())
+                .parse("banned_by_name", bannedBy.getName())
+                .parse("banned_by_id", bannedBy.getId())
+                .parse("reason", this.reason)
+                .parse("date", Utils.msToDate(this.timestamp))
+                .parse("unban_date", this.duration == 0 ? "Permanent" : Utils.msToDate(this.timestamp + this.duration));
+    }
+
 }

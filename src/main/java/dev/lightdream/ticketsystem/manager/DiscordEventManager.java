@@ -79,18 +79,14 @@ public class DiscordEventManager extends ListenerAdapter {
                         .parse("avatar", avatar)
                         .buildMessageAction(textChannel).queue();
 
-                Main.instance.bot.retrieveUserById(ban.bannedBy).queue(bannedBy ->
-                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.unbanDetails
-                                .parse("name", user.getName())
-                                .parse("id", user.getId())
-                                .parse("banned_by_name", bannedBy.getName())
-                                .parse("banned_by_id", bannedBy.getId())
-                                .parse("reason", ban.reason)
-                                .parse("date", Utils.msToDate(ban.timestamp))
-                                .build().build()).queue());
+                ban.sendBanDetails(textChannel);
 
                 textChannel.sendMessage("<@" + ban.bannedBy + ">").queue(message ->
                         message.delete().queue());
+
+                if(!ban.isApplicable()){
+                     ban.unban(textChannel);
+                }
 
             }, embed -> event.replyEmbeds(embed.build().build()).setEphemeral(true).queue());
         } else if (id.equalsIgnoreCase("unban")) {

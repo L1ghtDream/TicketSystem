@@ -82,7 +82,8 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
                     "Banned By: %banned_by_name%\n" +
                     "Banned By ID: %banned_by_id%\n" +
                     "Reason: %reason%\n" +
-                    "Ban Date: %date%",
+                    "Ban Date: %date%\n" +
+                    "Unban Date: %unban_date%",
             new ArrayList<>(),
             new ArrayList<>()
     );
@@ -280,6 +281,11 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
     public JDAEmbed timeLeft = JDAEmbed.red(
             "Inactive Ticket",
             "This tickets has a left %h%h %m%m %s%s."
+    );
+
+    public JDAEmbed banDurationInvalid = JDAEmbed.red(
+            "Invalid duration",
+            "The duration is invalid. Please use the format a duration of type [amount]m or [amount]h or [amount]d."
     );
 
 }

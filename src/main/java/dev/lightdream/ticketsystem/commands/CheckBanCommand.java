@@ -29,13 +29,7 @@ public class CheckBanCommand extends DiscordCommand {
             return;
         }
 
-        Main.instance.bot.retrieveUserById(ban.bannedBy).queue(bannedBy ->
-                sendMessage(context, Main.instance.jdaConfig.unbanDetails
-                        .parse("name", user.getName())
-                        .parse("id", user.getId())
-                        .parse("banned_by_name", bannedBy.getName())
-                        .parse("banned_by_id", String.valueOf(bannedBy))
-                        .parse("reason", ban.reason)));
+        ban.sendBanDetails(context, privateResponse);
     }
 
     @Override
