@@ -23,10 +23,8 @@ import dev.lightdream.ticketsystem.manager.DatabaseManager;
 import dev.lightdream.ticketsystem.manager.DiscordEventManager;
 import dev.lightdream.ticketsystem.manager.ScheduleManager;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
-import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.util.Arrays;
 
@@ -48,6 +46,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
     public JDA bot;
 
+    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
     public void onEnable() {
         Debugger.init(this);
         Logger.init(this);
@@ -59,14 +58,9 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
         databaseManager = new DatabaseManager(this);
 
-        try {
-            bot = JDABuilder.createDefault(jdaConfig.token)
-                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                    .build();
-        } catch (LoginException e) {
-            Logger.error("The bot token seems to be missing or incorrect, please check if it!");
-            return;
-        }
+        bot = JDAExtensionMain.generateBot(this, jdaConfig.token, Arrays.asList(
+                GatewayIntent.GUILD_MEMBERS
+        ));
 
         discordCommandManager = new DiscordCommandManager(this, Arrays.asList(
                 new HelpCommand(this),
@@ -130,6 +124,11 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     }
 
     @Override
+    public String getVersion() {
+        return "1.3.3";
+    }
+
+    @Override
     public JDA getBot() {
         return bot;
     }
@@ -153,4 +152,5 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     public JDALang getJDALang() {
         return lang;
     }
+
 }
