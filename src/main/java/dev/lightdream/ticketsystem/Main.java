@@ -19,6 +19,7 @@ import dev.lightdream.ticketsystem.dto.Lang;
 import dev.lightdream.ticketsystem.manager.DatabaseManager;
 import dev.lightdream.ticketsystem.manager.DiscordEventManager;
 import dev.lightdream.ticketsystem.manager.ScheduleManager;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
@@ -43,8 +44,14 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
     public JDA bot;
 
-    @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
-    public void onEnable() {
+    public static ISecurity security;
+
+    @SneakyThrows
+    @SuppressWarnings({"ArraysAsListWithZeroOrOneArgument"})
+    public void onEnable(ISecurity securityImpl) {
+        security = securityImpl;
+        security.sayHello();
+
         Debugger.init(this);
         Logger.init(this);
 
