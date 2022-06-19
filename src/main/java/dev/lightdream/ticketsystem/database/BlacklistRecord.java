@@ -1,13 +1,13 @@
-package dev.lightdream.ticketsystem.dto;
+package dev.lightdream.ticketsystem.database;
 
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
-import dev.lightdream.databasemanager.dto.DatabaseEntry;
+import dev.lightdream.databasemanager.dto.entry.impl.IntegerDatabaseEntry;
 import dev.lightdream.ticketsystem.Main;
 
 @DatabaseTable(table = "blacklist")
 
-public class BlacklistRecord extends DatabaseEntry {
+public class BlacklistRecord extends IntegerDatabaseEntry {
 
     @DatabaseField(columnName = "user_id")
     public Long userID;

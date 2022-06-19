@@ -7,10 +7,7 @@ import dev.lightdream.databasemanager.dto.SQLConfig;
 import dev.lightdream.filemanager.FileManager;
 import dev.lightdream.filemanager.FileManagerMain;
 import dev.lightdream.jdaextension.JDAExtensionMain;
-import dev.lightdream.jdaextension.commands.commands.HelpCommand;
 import dev.lightdream.jdaextension.commands.commands.StatsCommand;
-import dev.lightdream.jdaextension.dto.JDAEmbed;
-import dev.lightdream.jdaextension.dto.JDALang;
 import dev.lightdream.jdaextension.managers.DiscordCommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
@@ -63,7 +60,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         ));
 
         discordCommandManager = new DiscordCommandManager(this, Arrays.asList(
-                new HelpCommand(this),
                 new StatsCommand(this),
                 new BanDetailsCommand(),
                 new CloseCommand(),
@@ -136,21 +132,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     @Override
     public JDAConfig getJDAConfig() {
         return jdaConfig;
-    }
-
-    @Override
-    public DiscordCommandManager getDiscordCommandManager() {
-        return discordCommandManager;
-    }
-
-    @Override
-    public JDAEmbed getHelpEmbed() {
-        return jdaConfig.helpEmbed;
-    }
-
-    @Override
-    public JDALang getJDALang() {
-        return lang;
     }
 
 }

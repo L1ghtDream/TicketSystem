@@ -4,10 +4,10 @@ import dev.lightdream.databasemanager.DatabaseMain;
 import dev.lightdream.databasemanager.OrderBy;
 import dev.lightdream.databasemanager.database.ProgrammaticHikariDatabaseManager;
 import dev.lightdream.databasemanager.dto.QueryConstrains;
-import dev.lightdream.ticketsystem.dto.BanRecord;
-import dev.lightdream.ticketsystem.dto.BlacklistRecord;
-import dev.lightdream.ticketsystem.dto.Ticket;
-import dev.lightdream.ticketsystem.dto.Transcript;
+import dev.lightdream.ticketsystem.database.BanRecord;
+import dev.lightdream.ticketsystem.database.BlacklistRecord;
+import dev.lightdream.ticketsystem.database.Ticket;
+import dev.lightdream.ticketsystem.database.Transcript;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

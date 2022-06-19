@@ -5,7 +5,7 @@ import dev.lightdream.jdaextension.dto.CommandArgument;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
-import dev.lightdream.ticketsystem.dto.Ticket;
+import dev.lightdream.ticketsystem.database.Ticket;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.interactions.commands.OptionType;

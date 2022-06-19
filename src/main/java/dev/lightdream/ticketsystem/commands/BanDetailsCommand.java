@@ -6,7 +6,7 @@ import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
-import dev.lightdream.ticketsystem.dto.BanRecord;
+import dev.lightdream.ticketsystem.database.BanRecord;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 

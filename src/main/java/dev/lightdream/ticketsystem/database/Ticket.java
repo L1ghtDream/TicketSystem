@@ -1,14 +1,14 @@
-package dev.lightdream.ticketsystem.dto;
+package dev.lightdream.ticketsystem.database;
 
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
-import dev.lightdream.databasemanager.dto.DatabaseEntry;
+import dev.lightdream.databasemanager.dto.entry.impl.IntegerDatabaseEntry;
 import dev.lightdream.ticketsystem.Main;
 import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 
 @DatabaseTable(table = "tickets")
-public class Ticket extends DatabaseEntry {
+public class Ticket extends IntegerDatabaseEntry {
 
     @DatabaseField(columnName = "type")
     public String type;

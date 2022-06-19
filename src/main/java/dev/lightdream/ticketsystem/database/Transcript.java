@@ -1,8 +1,8 @@
-package dev.lightdream.ticketsystem.dto;
+package dev.lightdream.ticketsystem.database;
 
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
-import dev.lightdream.databasemanager.dto.DatabaseEntry;
+import dev.lightdream.databasemanager.dto.entry.impl.IntegerDatabaseEntry;
 import dev.lightdream.jdaextension.dto.context.CommandContext;
 import dev.lightdream.lambda.LambdaExecutor;
 import dev.lightdream.ticketsystem.Main;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @DatabaseTable(table = "transcripts")
-public class Transcript extends DatabaseEntry {
+public class Transcript extends IntegerDatabaseEntry {
 
     @DatabaseField(columnName = "ticket_id")
     public int ticketID;

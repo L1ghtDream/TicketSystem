@@ -1,8 +1,8 @@
-package dev.lightdream.ticketsystem.dto;
+package dev.lightdream.ticketsystem.database;
 
 import dev.lightdream.databasemanager.annotations.database.DatabaseField;
 import dev.lightdream.databasemanager.annotations.database.DatabaseTable;
-import dev.lightdream.databasemanager.dto.DatabaseEntry;
+import dev.lightdream.databasemanager.dto.entry.impl.IntegerDatabaseEntry;
 import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.jdaextension.dto.context.CommandContext;
 import dev.lightdream.logger.Logger;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @DatabaseTable(table = "bans")
-public class BanRecord extends DatabaseEntry {
+public class BanRecord extends IntegerDatabaseEntry {
 
     @DatabaseField(columnName = "user_id")
     public Long user;

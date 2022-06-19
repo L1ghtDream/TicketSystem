@@ -1,7 +1,7 @@
 package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.ticketsystem.Main;
-import dev.lightdream.ticketsystem.dto.BanRecord;
+import dev.lightdream.ticketsystem.database.BanRecord;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class BanManager {
