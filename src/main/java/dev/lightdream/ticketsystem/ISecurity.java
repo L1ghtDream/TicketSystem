@@ -6,4 +6,8 @@ public interface ISecurity {
         System.out.println("Hello from the default security implementation!");
     }
 
+    default String getConfigPath(){
+        return "/config/";
+    }
+
 }

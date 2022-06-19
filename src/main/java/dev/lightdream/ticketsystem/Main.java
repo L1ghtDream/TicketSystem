@@ -98,7 +98,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
     @Override
     public File getDataFolder() {
-        return new File(System.getProperty("user.dir") + "/config/");
+        return new File(System.getProperty("user.dir") + security.getConfigPath());
     }
 
     @Override
