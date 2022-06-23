@@ -29,22 +29,18 @@ import java.util.Arrays;
 public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExtensionMain {
 
     public static Main instance;
-
+    public static ISecurity security;
     public Config config;
     public SQLConfig sqlConfig;
     public DriverConfig driverConfig;
     public JDAConfig jdaConfig;
     public Lang lang;
-
     public FileManager fileManager;
     public DatabaseManager databaseManager;
     public DiscordCommandManager discordCommandManager;
     public DiscordEventManager discordEventManager;
     public ScheduleManager scheduleManager;
-
     public JDA bot;
-
-    public static ISecurity security;
 
     @SneakyThrows
     @SuppressWarnings({"ArraysAsListWithZeroOrOneArgument"})
@@ -65,6 +61,10 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         bot = JDAExtensionMain.generateBot(this, jdaConfig.token, Arrays.asList(
                 GatewayIntent.GUILD_MEMBERS
         ));
+
+        if (bot == null) {
+            return;
+        }
 
         discordCommandManager = new DiscordCommandManager(this, Arrays.asList(
                 new StatsCommand(this),
@@ -128,7 +128,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
     @Override
     public String getVersion() {
-        return "1.3.3";
+        return "1.21.1";
     }
 
     @Override

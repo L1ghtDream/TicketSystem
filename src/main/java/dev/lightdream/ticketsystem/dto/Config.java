@@ -12,18 +12,10 @@ public class Config {
     public Long unbanTicketsChanel = 0L;
 
     public List<TicketType> ticketTypes = Arrays.asList(
-            new TicketType("\uD83D\uDCDC General", "general", 0L, Arrays.asList(
-                    0L
-            )),
-            new TicketType("\uD83C\uDFC6 Tops", "tops", 0L, Arrays.asList(
-                    0L
-            )),
-            new TicketType("\uD83D\uDCB0 Donations", "donations", 0L, Arrays.asList(
-                    0L
-            )),
-            new TicketType("\uD83D\uDD12 Lost Passwords", "lost-passwords", 0L, Arrays.asList(
-                    0L
-            ))
+            new TicketType("\uD83D\uDCDC General", "general", 0L, new ArrayList<>()),
+            new TicketType("\uD83C\uDFC6 Tops", "tops", 0L, new ArrayList<>()),
+            new TicketType("\uD83D\uDCB0 Donations", "donations", 0L, new ArrayList<>()),
+            new TicketType("\uD83D\uDD12 Lost Passwords", "lost-passwords", 0L, new ArrayList<>())
     );
 
     public TicketType unbanTicket = new TicketType("\uD83D\uDD13 Unban Request", "unban-request", 0L, new ArrayList<>());
