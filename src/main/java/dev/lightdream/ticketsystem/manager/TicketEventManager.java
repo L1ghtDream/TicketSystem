@@ -6,6 +6,7 @@ import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.BlacklistRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
+import dev.lightdream.ticketsystem.event.TicketCallManagerEvent;
 import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import lombok.SneakyThrows;
@@ -78,6 +79,32 @@ public class TicketEventManager {
 
         event.getTextChannel().sendMessageEmbeds(Main.instance.jdaConfig.closingTicket.clone().build().build()).queue();
         event.close();
+    }
+
+    @EventHandler
+    public void onManagerCall(TicketCallManagerEvent event){
+        if(event.isCancelled()){
+            return;
+        }
+
+        MessageChannel channel = event.getChannel();
+
+        Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
+        if (ticket == null) {
+            return;
+        }
+
+        event.close();
+
+        if (ticket.pingedManager) {
+            channel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyPingedManager.build().build()).queue();
+            return;
+        }
+
+        channel.sendMessage("<@&" + Main.instance.config.managerPingRank + ">").queue(message ->
+                message.delete().queue());
+
+        ticket.setPingedManager(true);
     }
 
     @SneakyThrows

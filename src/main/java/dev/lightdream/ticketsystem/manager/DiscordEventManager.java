@@ -5,10 +5,14 @@ import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
+import dev.lightdream.ticketsystem.event.TicketCallManagerEvent;
 import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -31,28 +35,11 @@ public class DiscordEventManager extends ListenerAdapter {
 
         if (id.equalsIgnoreCase("close-ticket")) {
             new TicketCloseEvent(event.getTextChannel(), event.getUser(), event).fire();
+            return;
         }
         if (id.equalsIgnoreCase("manager")) {
-            MessageChannel channel = event.getChannel();
-
-            Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
-            if (ticket == null) {
-                return;
-            }
-
-            if (ticket.pingedManager) {
-                channel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyPingedManager.build().build()).queue();
-                return;
-            }
-
-            channel.sendMessage("<@&" + Main.instance.config.managerPingRank + ">").queue(message ->
-                    message.delete().queue());
-
-            ticket.pingedManager = true;
-            ticket.save();
-            event.deferEdit().queue();
+            new TicketCallManagerEvent(event.getChannel(), event).fire();
             return;
-
         }
         if (id.equalsIgnoreCase("unban")) {
             Member member = event.getMember();

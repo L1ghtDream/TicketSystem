@@ -60,5 +60,10 @@ public class Ticket extends IntegerDatabaseEntry {
         save();
     }
 
+    public void setPingedManager(boolean pingedManager) {
+        this.pingedManager = pingedManager;
+        save();
+    }
+
 
 }
