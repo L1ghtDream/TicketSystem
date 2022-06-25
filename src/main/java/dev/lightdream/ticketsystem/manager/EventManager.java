@@ -1,7 +1,7 @@
 package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.ticketsystem.annotation.EventHandler;
-import dev.lightdream.ticketsystem.event.TicketEvent;
+import dev.lightdream.ticketsystem.event.generic.TicketEvent;
 import dev.lightdream.ticketsystem.utils.ReflectionHelper;
 
 import java.lang.reflect.Method;

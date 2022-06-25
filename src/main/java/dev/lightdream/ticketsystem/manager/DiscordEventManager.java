@@ -1,11 +1,11 @@
 package dev.lightdream.ticketsystem.manager;
 
-import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
+import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -30,11 +30,7 @@ public class DiscordEventManager extends ListenerAdapter {
         String id = event.getComponentId();
 
         if (id.equalsIgnoreCase("close-ticket")) {
-            JDAEmbed embed = TicketManager.closeTicket(event.getTextChannel(), event.getUser());
-            event.getTextChannel().sendMessageEmbeds(embed.build().build()).queue();
-            event.deferEdit().queue();
-            return;
-
+            new TicketCloseEvent(event.getTextChannel(), event.getUser(), event).fire();
         }
         if (id.equalsIgnoreCase("manager")) {
             MessageChannel channel = event.getChannel();

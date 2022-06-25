@@ -3,6 +3,7 @@ package dev.lightdream.ticketsystem.manager;
 import dev.lightdream.lambda.LambdaExecutor;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
+import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
@@ -61,8 +62,13 @@ public class ScheduleManager {
                         return;
                     }
 
-                    lastMessageSent(textChannel, () -> textChannel.sendMessageEmbeds(Main.instance.jdaConfig.inactiveTicket.build().build()).queue(),
-                            botUser -> TicketManager.closeTicket(textChannel, botUser), timeLeft -> {
+                    //noinspection CodeBlock2Expr
+                    lastMessageSent(textChannel, () -> {
+                                textChannel.sendMessageEmbeds(Main.instance.jdaConfig.inactiveTicket.build().build()).queue();
+                            },
+                            botUser -> {
+                                new TicketCloseEvent(textChannel, botUser, null).fire();
+                            }, timeLeft -> {
                             });
                 });
 

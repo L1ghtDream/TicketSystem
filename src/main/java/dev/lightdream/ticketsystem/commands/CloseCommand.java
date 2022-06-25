@@ -4,7 +4,7 @@ import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
-import dev.lightdream.ticketsystem.manager.TicketManager;
+import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 
 import java.util.ArrayList;
 
@@ -15,12 +15,12 @@ public class CloseCommand extends DiscordCommand {
 
     @Override
     public void executeGuild(GuildCommandContext context) {
-        sendMessage(context, TicketManager.closeTicket(context.getTextChannel(), context.getUser()));
+        new TicketCloseEvent(context.getTextChannel(), context.getUser(), context.getEvent()).fire();
     }
 
     @Override
     public void executePrivate(PrivateCommandContext commandContext) {
-        //Imposible
+        //Impossible
     }
 
     @Override

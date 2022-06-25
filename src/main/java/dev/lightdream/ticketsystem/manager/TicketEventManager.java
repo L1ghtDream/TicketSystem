@@ -6,10 +6,13 @@ import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.BlacklistRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
+import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,6 +25,9 @@ public class TicketEventManager {
 
     @EventHandler
     public void onTicketCreate(TicketCreateEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
 
         TicketType ticketType = event.getType();
 
@@ -53,8 +59,29 @@ public class TicketEventManager {
 
     }
 
+    @EventHandler
+    public void onTicketClose(TicketCloseEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
+
+        TextChannel textChannel = event.getTextChannel();
+
+        Ticket ticket = Main.instance.databaseManager.getTicket(textChannel.getIdLong());
+
+        if (ticket == null) {
+            event.reply(Main.instance.jdaConfig.notTicket);
+            return;
+        }
+
+        closeTicket(event);
+
+        event.getTextChannel().sendMessageEmbeds(Main.instance.jdaConfig.closingTicket.clone().build().build()).queue();
+        event.close();
+    }
+
     @SneakyThrows
-    public void generalTicketSetup(TicketCreateEvent event) {
+    private void generalTicketSetup(TicketCreateEvent event) {
         Guild guild = event.getGuild();
         Member member = event.getMember();
         TicketType ticketType = event.getType();
@@ -127,7 +154,7 @@ public class TicketEventManager {
         event.setTextChannel(textChannel);
     }
 
-    public void checkBanTicketRequirements(TicketCreateEvent event) {
+    private void checkBanTicketRequirements(TicketCreateEvent event) {
         User user = event.getMember().getUser();
         BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
 
@@ -138,7 +165,7 @@ public class TicketEventManager {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void completeTicketAsBan(TicketCreateEvent event) {
+    private void completeTicketAsBan(TicketCreateEvent event) {
         User user = event.getMember().getUser();
         TextChannel textChannel = event.getTextChannel();
         BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
@@ -165,7 +192,7 @@ public class TicketEventManager {
         }
     }
 
-    public void completeTicketAsGeneral(TicketCreateEvent event) {
+    private void completeTicketAsGeneral(TicketCreateEvent event) {
         TextChannel textChannel = event.getTextChannel();
 
         User user = event.getMember().getUser();
@@ -179,6 +206,26 @@ public class TicketEventManager {
                 .parse("name", user.getName())
                 .parse("avatar", avatar)
                 .buildMessageAction(textChannel).queue();
+    }
+
+    private void closeTicket(TicketCloseEvent event) {
+        Ticket ticket = event.getTicket();
+        User user = event.getUser();
+        TextChannel textChannel = event.getTextChannel();
+
+        new java.util.Timer().schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                ticket.getTranscript().record(user, "Closed Ticket");
+                ticket.close();
+                textChannel.delete().queue(null, new ErrorHandler().handle(
+                        ErrorResponse.UNKNOWN_CHANNEL,
+                        e -> {
+                            //empty
+                        }
+                ));
+            }
+        }, 5000);
     }
 
 
