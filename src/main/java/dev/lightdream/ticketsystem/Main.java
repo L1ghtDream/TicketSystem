@@ -9,13 +9,12 @@ import dev.lightdream.filemanager.FileManagerMain;
 import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.commands.StatsCommand;
 import dev.lightdream.jdaextension.managers.DiscordCommandManager;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.commands.*;
-import dev.lightdream.ticketsystem.dto.Config;
-import dev.lightdream.ticketsystem.dto.JDAConfig;
-import dev.lightdream.ticketsystem.dto.Lang;
+import dev.lightdream.ticketsystem.dto.conifg.Config;
+import dev.lightdream.ticketsystem.dto.conifg.JDAConfig;
+import dev.lightdream.ticketsystem.dto.conifg.Lang;
 import dev.lightdream.ticketsystem.manager.*;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
@@ -56,7 +55,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         security = securityImpl;
         security.sayHello();
 
-        Debugger.init(this);
         Logger.init(this);
 
         instance = this;

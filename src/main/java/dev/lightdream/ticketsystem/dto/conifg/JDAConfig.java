@@ -1,4 +1,4 @@
-package dev.lightdream.ticketsystem.dto;
+package dev.lightdream.ticketsystem.dto.conifg;
 
 import dev.lightdream.jdaextension.dto.JDAButton;
 import dev.lightdream.jdaextension.dto.JDAEmbed;
@@ -12,36 +12,6 @@ import java.util.Arrays;
 public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
 
     public long botID = 946512611896344637L;
-
-    public JDAEmbed ticket = new JDAEmbed(
-            0,
-            0,
-            0,
-            "Create Ticket",
-            "",
-            "**Select the ticket type that you want to create**",
-            Arrays.asList(new JDAField("Warnings!",
-                    "We do not solve any problems related to any lost or stolen items!\n" +
-                            "You can only apply for discord and miscellaneous positions on discord.\n" +
-                            "If you want to apply for minecraft staff you can do so at https://original.gg/apply",
-                    true)),
-            new ArrayList<>()
-    );
-
-    public JDAEmbed unbanTicket = new JDAEmbed(
-            0,
-            0,
-            0,
-            "Create Unban Ticket",
-            "",
-            "",
-            Arrays.asList(new JDAField("Warnings!",
-                    "If you have been banned for advertising you will not be able to be unbanned!\n" +
-                            "If you have been banned as a result of your account being compromised you will need to provide proof that you have secured your account",
-                    true)),
-            new ArrayList<>()
-    );
-
 
     public JDAEmbed ticketGreeting = new JDAEmbed(
             0,

@@ -8,6 +8,10 @@ public class TicketType {
     public String id;
     public Long categoryID;
     public List<Long> associatedRanks;
+    /**
+     * Registered handlers: general, unban, dialogue
+     */
+    public String handler = "general";
 
     public TicketType() {
     }

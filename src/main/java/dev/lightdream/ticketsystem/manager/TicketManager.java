@@ -2,7 +2,6 @@ package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.lambda.LambdaExecutor;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BlacklistRecord;
 import dev.lightdream.ticketsystem.database.Ticket;

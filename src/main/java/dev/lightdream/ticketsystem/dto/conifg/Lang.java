@@ -1,4 +1,4 @@
-package dev.lightdream.ticketsystem.dto;
+package dev.lightdream.ticketsystem.dto.conifg;
 
 public class Lang {
 

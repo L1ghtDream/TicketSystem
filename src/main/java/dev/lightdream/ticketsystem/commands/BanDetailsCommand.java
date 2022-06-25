@@ -4,7 +4,6 @@ import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BanRecord;
 import net.dv8tion.jda.api.Permission;
@@ -31,7 +30,6 @@ public class BanDetailsCommand extends DiscordCommand {
 
         BanRecord ban = Main.instance.databaseManager.getBan(id);
         if (ban == null) {
-            Debugger.info("Null ban");
             return;
         }
 

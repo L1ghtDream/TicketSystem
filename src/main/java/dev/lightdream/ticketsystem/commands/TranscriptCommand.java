@@ -4,7 +4,6 @@ import dev.lightdream.jdaextension.commands.DiscordCommand;
 import dev.lightdream.jdaextension.dto.CommandArgument;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.database.Transcript;
@@ -33,14 +32,12 @@ public class TranscriptCommand extends DiscordCommand {
 
         Transcript transcript = Main.instance.databaseManager.getTranscript(id);
         if (transcript == null) {
-            Debugger.info("Null transcript");
             return;
         }
 
         Ticket ticket = Main.instance.databaseManager.getTicket(id);
 
         if (ticket == null) {
-            Debugger.info("Null ticket");
             return;
         }
 

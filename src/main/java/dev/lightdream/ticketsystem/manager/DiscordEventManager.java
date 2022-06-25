@@ -1,11 +1,11 @@
 package dev.lightdream.ticketsystem.manager;
 
 import dev.lightdream.jdaextension.dto.JDAEmbed;
-import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
+import dev.lightdream.ticketsystem.dto.TicketType;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DiscordEventManager extends ListenerAdapter {
 
@@ -30,22 +29,24 @@ public class DiscordEventManager extends ListenerAdapter {
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String id = event.getComponentId();
 
-        Conditions:
         if (id.equalsIgnoreCase("close-ticket")) {
             JDAEmbed embed = TicketManager.closeTicket(event.getTextChannel(), event.getUser());
             event.getTextChannel().sendMessageEmbeds(embed.build().build()).queue();
             event.deferEdit().queue();
-        } else if (id.equalsIgnoreCase("manager")) {
+            return;
+
+        }
+        if (id.equalsIgnoreCase("manager")) {
             MessageChannel channel = event.getChannel();
 
             Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
             if (ticket == null) {
-                break Conditions;
+                return;
             }
 
             if (ticket.pingedManager) {
                 channel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyPingedManager.build().build()).queue();
-                break Conditions;
+                return;
             }
 
             channel.sendMessage("<@&" + Main.instance.config.managerPingRank + ">").queue(message ->
@@ -54,48 +55,16 @@ public class DiscordEventManager extends ListenerAdapter {
             ticket.pingedManager = true;
             ticket.save();
             event.deferEdit().queue();
-        } else if (id.equals(Main.instance.config.unbanTicket.id)) {
-            User user = event.getUser();
+            return;
 
-            BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
-
-            if (ban == null) {
-                event.replyEmbeds(Main.instance.jdaConfig.notBanned.build().build()).setEphemeral(true).queue();
-                return;
-            }
-
-            TicketCreateEvent createEvent = new TicketCreateEvent(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, event);
-            createEvent.fire();
-
-            TextChannel textChannel = createEvent.getTextChannel();
-
-            if (textChannel != null) {
-                String avatar = user.getAvatarUrl() == null ?
-                        "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3" :
-                        user.getAvatarUrl();
-
-                Main.instance.jdaConfig.unbanTicketGreeting
-                        .parse("name", user.getName())
-                        .parse("avatar", avatar)
-                        .buildMessageAction(textChannel).queue();
-
-                ban.sendBanDetails(textChannel);
-
-                textChannel.sendMessage("<@" + ban.bannedBy + ">").queue(message ->
-                        message.delete().queue());
-
-                if (!ban.isApplicable()) {
-                    ban.unban(textChannel);
-                }
-            }
-
-        } else if (id.equalsIgnoreCase("unban")) {
+        }
+        if (id.equalsIgnoreCase("unban")) {
             Member member = event.getMember();
             TextChannel channel = event.getTextChannel();
 
             if (member == null || !member.hasPermission(Permission.BAN_MEMBERS)) {
                 channel.sendMessageEmbeds(Main.instance.jdaConfig.notAllowed.build().build()).queue();
-                break Conditions;
+                return;
             }
 
             Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
@@ -107,31 +76,17 @@ public class DiscordEventManager extends ListenerAdapter {
 
             BanManager.unban(ticket.creatorID, channel);
             event.deferEdit().queue();
-        } else {
-            Main.instance.config.ticketTypes.forEach(ticketType -> {
-                if (!ticketType.id.equals(id)) {
-                    return;
-                }
-
-                TicketCreateEvent createEvent = new TicketCreateEvent(event.getGuild(), event.getMember(), ticketType, event);
-                createEvent.fire();
-
-                TextChannel textChannel = createEvent.getTextChannel();
-
-                if (textChannel != null) {
-                    User user = event.getUser();
-
-                    String avatar = user.getAvatarUrl() == null ?
-                            "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3" :
-                            user.getAvatarUrl();
-
-                    Main.instance.jdaConfig.ticketGreeting
-                            .parse("name", user.getName())
-                            .parse("avatar", avatar)
-                            .buildMessageAction(textChannel).queue();
-                }
-            });
+            return;
         }
+
+        TicketType type = Main.instance.config.getTicketTypeByID(id);
+
+        if (type == null) {
+            return;
+        }
+
+        new TicketCreateEvent(event.getGuild(), event.getMember(), type, event).fire();
+
     }
 
     @Override
@@ -141,19 +96,9 @@ public class DiscordEventManager extends ListenerAdapter {
         }
 
         try {
-            AtomicBoolean inCategory = new AtomicBoolean(false);
+            TicketType ticketType = Main.instance.config.getTicketTypeByCategoryID(event.getTextChannel().getParentCategoryIdLong());
 
-            if (Main.instance.config.unbanTicket.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
-                inCategory.set(true);
-            }
-
-            Main.instance.config.ticketTypes.forEach(ticketType -> {
-                if (ticketType.categoryID.equals(event.getTextChannel().getParentCategoryIdLong())) {
-                    inCategory.set(true);
-                }
-            });
-
-            if (!inCategory.get()) {
+            if (ticketType == null) {
                 return;
             }
 
@@ -172,15 +117,10 @@ public class DiscordEventManager extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
 
-        Debugger.info(event.getMember() + " has joined");
-
         BanRecord banRecord = Main.instance.databaseManager.getBan(event.getMember().getIdLong());
         if (banRecord == null) {
-            Debugger.info(event.getMember() + " is not banned");
             return;
         }
-
-        Debugger.info(event.getMember() + " is banned");
 
         Member member = event.getMember();
         Guild guild = event.getGuild();
