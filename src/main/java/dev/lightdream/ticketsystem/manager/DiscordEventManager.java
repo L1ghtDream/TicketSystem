@@ -113,9 +113,7 @@ public class DiscordEventManager extends ListenerAdapter {
                     return;
                 }
 
-                Debugger.info("For loop instance");
-
-                TicketCreateEvent createEvent = new TicketCreateEvent(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, event);
+                TicketCreateEvent createEvent = new TicketCreateEvent(event.getGuild(), event.getMember(), ticketType, event);
                 createEvent.fire();
 
                 TextChannel textChannel = createEvent.getTextChannel();

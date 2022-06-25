@@ -21,16 +21,11 @@ public class SetupCommand extends DiscordCommand {
     @Override
     public void executeGuild(GuildCommandContext context) {
         JDAEmbed ticket = Main.instance.jdaConfig.ticket.clone();
-        Debugger.log("[1]: " + ticket.jdaButtons);
-        Debugger.log("[2]: " + Main.instance.config.ticketTypes);
         Main.instance.config.ticketTypes.forEach(ticketType -> {
             JDAButton button = new JDAButton(JDAButtonType.PRIMARY, ticketType.id, ticketType.name);
-            Debugger.log("Adding button " + button);
             ticket.jdaButtons.add(button);
         });
 
-        Debugger.log(Main.instance.bot.getTextChannelById(Main.instance.config.ticketsChanel));
-        Debugger.log("[3]: " + ticket.jdaButtons);
         ticket.buildMessageAction(Main.instance.bot.getTextChannelById(Main.instance.config.ticketsChanel)).queue();
 
         JDAEmbed banTicket = Main.instance.jdaConfig.unbanTicket.clone();

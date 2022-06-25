@@ -7,11 +7,15 @@ import dev.lightdream.ticketsystem.database.BlacklistRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import sun.awt.image.OffScreenImageSource;
+
+import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("unused")
 public class TicketEventManager {
@@ -20,8 +24,9 @@ public class TicketEventManager {
         Main.instance.eventManager.register(this);
     }
 
+    @SneakyThrows
     @EventHandler
-    public void onTicketCreate(TicketCreateEvent event) {
+    public void _onTicketCreate(TicketCreateEvent event) {
         Guild guild = event.getGuild();
         Member member = event.getMember();
         TicketType ticketType = event.getType();
@@ -66,8 +71,10 @@ public class TicketEventManager {
             return;
         }
 
-        guild.createTextChannel(member.getEffectiveName(), category).queue(textChannel -> {
-            textChannel.upsertPermissionOverride(member).setAllowed(
+        CompletableFuture<TextChannel>textChannelCF =  guild.createTextChannel(member.getEffectiveName(), category).submit();
+
+        TextChannel textChannel = textChannelCF.get();
+        textChannel.upsertPermissionOverride(member).setAllowed(
                     Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                     Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
             ).queue();
@@ -90,16 +97,6 @@ public class TicketEventManager {
 
             event.reply(Main.instance.jdaConfig.ticketCreated);
             event.setTextChannel(textChannel);
-        });
     }
 
-    @EventHandler
-    public void onTicketCreate1(TicketCreateEvent event) {
-        Debugger.log("[1] Creating new ticket");
-    }
-
-    @EventHandler
-    public void onTicketCreate2(TicketCreateEvent event) {
-        Debugger.log("[2] Creating new ticket");
-    }
 }

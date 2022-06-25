@@ -2,8 +2,6 @@ package dev.lightdream.ticketsystem.event;
 
 import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.ticketsystem.dto.TicketType;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -11,17 +9,9 @@ import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 
 public class TicketCreateEvent extends TicketEvent {
 
-    @Getter
-    @Setter
     private Guild guild;
-    @Getter
-    @Setter
     private Member member;
-    @Getter
-    @Setter
     private TicketType type;
-    @Getter
-    @Setter
     private TextChannel textChannel;
     private final IReplyCallback replyCallback;
 
@@ -42,6 +32,28 @@ public class TicketCreateEvent extends TicketEvent {
                 "guild=" + guild +
                 ", member=" + member +
                 ", type=" + type +
+                ", textChannel=" + textChannel +
+                ", replyCallback=" + replyCallback +
                 '}';
+    }
+
+    public Guild getGuild() {
+        return guild;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public TicketType getType() {
+        return type;
+    }
+
+    public TextChannel getTextChannel() {
+        return textChannel;
+    }
+
+    public void setTextChannel(TextChannel textChannel) {
+        this.textChannel = textChannel;
     }
 }

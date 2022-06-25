@@ -8,6 +8,7 @@ import dev.lightdream.filemanager.FileManager;
 import dev.lightdream.filemanager.FileManagerMain;
 import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.commands.StatsCommand;
+import dev.lightdream.jdaextension.managers.DiscordCommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
 import dev.lightdream.logger.Logger;
@@ -66,7 +67,6 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         databaseManager = new DatabaseManager(this);
         eventManager = new EventManager();
         ticketEventManager = new TicketEventManager();
-
 
         bot = security.getBot();
 

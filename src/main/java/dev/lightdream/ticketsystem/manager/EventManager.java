@@ -108,6 +108,7 @@ public class EventManager {
         }
 
         public void fire(Object object, TicketEvent event) {
+            sort();
             for (Method method : methods) {
                 try {
                     method.invoke(object, event);
@@ -115,6 +116,14 @@ public class EventManager {
                     e.printStackTrace();
                 }
             }
+        }
+
+        public void sort() {
+            methods.sort((o1, o2) -> {
+                int i1 = -o1.getAnnotation(EventHandler.class).priority();
+                int i2 = -o2.getAnnotation(EventHandler.class).priority();
+                return i1 - i2;
+            });
         }
 
         @Override
