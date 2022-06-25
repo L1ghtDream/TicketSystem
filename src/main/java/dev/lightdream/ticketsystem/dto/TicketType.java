@@ -18,4 +18,14 @@ public class TicketType {
         this.categoryID = categoryID;
         this.associatedRanks = associatedRanks;
     }
+
+    @Override
+    public String toString() {
+        return "TicketType{" +
+                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", categoryID=" + categoryID +
+                ", associatedRanks=" + associatedRanks +
+                '}';
+    }
 }

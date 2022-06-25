@@ -7,7 +7,7 @@ import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.jdaextension.dto.context.CommandContext;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
-import dev.lightdream.ticketsystem.Utils;
+import dev.lightdream.ticketsystem.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;

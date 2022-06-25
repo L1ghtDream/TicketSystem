@@ -7,7 +7,7 @@
     <parent>
         <artifactId>RoyalSecurity-Parent</artifactId>
         <groupId>dev.lightdream</groupId>
-        <version>1.22.1</version>
+        <version>1.22.2</version>
     </parent>
 
     <artifactId>TicketSystem</artifactId>
@@ -37,21 +37,6 @@
         </dependency>
 
         <!-- Own Repo -->
-        <dependency>
-            <groupId>dev.lightdream</groupId>
-            <artifactId>Logger</artifactId>
-            <version>2.3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.lightdream</groupId>
-            <artifactId>JDAExtension</artifactId>
-            <version>1.29</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.lightdream</groupId>
-            <artifactId>DatabaseManager</artifactId>
-            <version>3.7.3</version>
-        </dependency>
         <dependency>
             <groupId>dev.lightdream</groupId>
             <artifactId>RoyalSecurity-Parent</artifactId>

@@ -1,4 +1,6 @@
-package dev.lightdream.ticketsystem;
+package dev.lightdream.ticketsystem.utils;
+
+import dev.lightdream.ticketsystem.Main;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

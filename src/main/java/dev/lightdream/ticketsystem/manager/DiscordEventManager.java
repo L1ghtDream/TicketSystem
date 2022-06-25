@@ -9,7 +9,7 @@ import dev.lightdream.ticketsystem.database.Ticket;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -26,18 +26,15 @@ public class DiscordEventManager extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         String id = event.getComponentId();
-        Debugger.info(id);
 
         Conditions:
         if (id.equalsIgnoreCase("close-ticket")) {
-            Debugger.info("IF-ELSE 1");
             JDAEmbed embed = TicketManager.closeTicket(event.getTextChannel(), event.getUser());
             event.getTextChannel().sendMessageEmbeds(embed.build().build()).queue();
             event.deferEdit().queue();
         } else if (id.equalsIgnoreCase("manager")) {
-            Debugger.info("IF-ELSE 2");
             MessageChannel channel = event.getChannel();
 
             Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
@@ -57,8 +54,6 @@ public class DiscordEventManager extends ListenerAdapter {
             ticket.save();
             event.deferEdit().queue();
         } else if (id.equals(Main.instance.config.unbanTicket.id)) {
-            Debugger.info("IF-ELSE 3");
-
             User user = event.getUser();
 
             BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
@@ -83,14 +78,12 @@ public class DiscordEventManager extends ListenerAdapter {
                 textChannel.sendMessage("<@" + ban.bannedBy + ">").queue(message ->
                         message.delete().queue());
 
-                if(!ban.isApplicable()){
-                     ban.unban(textChannel);
+                if (!ban.isApplicable()) {
+                    ban.unban(textChannel);
                 }
 
             }, embed -> event.replyEmbeds(embed.build().build()).setEphemeral(true).queue());
         } else if (id.equalsIgnoreCase("unban")) {
-            Debugger.info("IF-ELSE 4");
-
             Member member = event.getMember();
             TextChannel channel = event.getTextChannel();
 
@@ -109,8 +102,6 @@ public class DiscordEventManager extends ListenerAdapter {
             BanManager.unban(ticket.creatorID, channel);
             event.deferEdit().queue();
         } else {
-            Debugger.info("IF-ELSE 5");
-
             Main.instance.config.ticketTypes.forEach(ticketType -> {
                 if (!ticketType.id.equals(id)) {
                     return;

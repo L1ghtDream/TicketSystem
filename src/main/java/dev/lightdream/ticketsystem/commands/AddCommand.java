@@ -34,7 +34,7 @@ public class AddCommand extends DiscordCommand {
             return;
         }
 
-        context.getTextChannel().putPermissionOverride(member).setAllow(
+        context.getTextChannel().upsertPermissionOverride(member).setAllowed(
                 Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                 Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
         ).queue();

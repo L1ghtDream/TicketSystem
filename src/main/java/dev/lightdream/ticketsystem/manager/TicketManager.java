@@ -75,7 +75,7 @@ public class TicketManager {
                 continue;
             }
 
-            channel.putPermissionOverride(member).setAllow(
+            channel.upsertPermissionOverride(member).setAllowed(
                     Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                     Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
             ).queue();
@@ -88,7 +88,7 @@ public class TicketManager {
         }
 
         guild.createTextChannel(member.getEffectiveName(), category).queue(textChannel -> {
-            textChannel.putPermissionOverride(member).setAllow(
+            textChannel.upsertPermissionOverride(member).setAllowed(
                     Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                     Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
             ).queue();
@@ -98,7 +98,7 @@ public class TicketManager {
                     return;
                 }
                 //noinspection ConstantConditions
-                textChannel.putPermissionOverride(Main.instance.bot.getRoleById(rank)).setAllow(
+                textChannel.upsertPermissionOverride(Main.instance.bot.getRoleById(rank)).setAllowed(
                         Permission.MESSAGE_SEND, Permission.MESSAGE_HISTORY,
                         Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL
                 ).queue();

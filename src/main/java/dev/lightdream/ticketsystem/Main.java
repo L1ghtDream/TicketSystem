@@ -8,7 +8,6 @@ import dev.lightdream.filemanager.FileManager;
 import dev.lightdream.filemanager.FileManagerMain;
 import dev.lightdream.jdaextension.JDAExtensionMain;
 import dev.lightdream.jdaextension.commands.commands.StatsCommand;
-import dev.lightdream.jdaextension.managers.DiscordCommandManager;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.logger.LoggableMain;
 import dev.lightdream.logger.Logger;
@@ -16,9 +15,7 @@ import dev.lightdream.ticketsystem.commands.*;
 import dev.lightdream.ticketsystem.dto.Config;
 import dev.lightdream.ticketsystem.dto.JDAConfig;
 import dev.lightdream.ticketsystem.dto.Lang;
-import dev.lightdream.ticketsystem.manager.DatabaseManager;
-import dev.lightdream.ticketsystem.manager.DiscordEventManager;
-import dev.lightdream.ticketsystem.manager.ScheduleManager;
+import dev.lightdream.ticketsystem.manager.*;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -28,18 +25,27 @@ import java.util.Arrays;
 
 public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExtensionMain {
 
+
+    // Statics
     public static Main instance;
     public static ISecurity security;
+
+    // Config
     public Config config;
     public SQLConfig sqlConfig;
     public DriverConfig driverConfig;
     public JDAConfig jdaConfig;
     public Lang lang;
+
+    // Manager
     public FileManager fileManager;
     public DatabaseManager databaseManager;
     public DiscordCommandManager discordCommandManager;
     public DiscordEventManager discordEventManager;
     public ScheduleManager scheduleManager;
+    public EventManager eventManager;
+
+    // Others
     public JDA bot;
 
     @SneakyThrows
@@ -57,12 +63,19 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         loadConfigs();
 
         databaseManager = new DatabaseManager(this);
+        eventManager = new EventManager();
 
-        bot = JDAExtensionMain.generateBot(this, jdaConfig.token, Arrays.asList(
-                GatewayIntent.GUILD_MEMBERS
-        ));
+        bot = security.getBot();
 
         if (bot == null) {
+            Logger.log("Bot has not been provided in the ISecurity impl. Resolving to creating one from config");
+            bot = JDAExtensionMain.generateBot(this, jdaConfig.token, Arrays.asList(
+                    GatewayIntent.GUILD_MEMBERS
+            ));
+        }
+
+        if (bot == null) {
+            Logger.error("Bot has not been created. Exiting!");
             return;
         }
 
@@ -81,6 +94,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
                 new DebugCommand(),
                 new SetupCommand()
         ));
+
         discordEventManager = new DiscordEventManager(this);
         scheduleManager = new ScheduleManager();
 

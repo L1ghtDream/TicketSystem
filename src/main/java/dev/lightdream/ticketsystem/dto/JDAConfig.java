@@ -22,7 +22,8 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "**Select the ticket type that you want to create**",
             Arrays.asList(new JDAField("Warnings!",
                     "We do not solve any problems related to any lost or stolen items!\n" +
-                            "All the complains are made on https://original.gg/complain!",
+                            "You can only apply for discord and miscellaneous positions on discord.\n" +
+                            "If you want to apply for minecraft staff you can do so at https://original.gg/apply",
                     true)),
             new ArrayList<>()
     );
