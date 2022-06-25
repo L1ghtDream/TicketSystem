@@ -44,6 +44,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     public DiscordEventManager discordEventManager;
     public ScheduleManager scheduleManager;
     public EventManager eventManager;
+    public TicketEventManager ticketEventManager;
 
     // Others
     public JDA bot;
@@ -64,6 +65,8 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
 
         databaseManager = new DatabaseManager(this);
         eventManager = new EventManager();
+        ticketEventManager = new TicketEventManager();
+
 
         bot = security.getBot();
 

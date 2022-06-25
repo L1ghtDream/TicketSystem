@@ -7,6 +7,7 @@ import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BlacklistRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
+import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.ErrorHandler;
@@ -46,7 +47,7 @@ public class TicketManager {
     public static void createTicket(Guild guild, Member member, TicketType ticketType,
                                     LambdaExecutor.NoReturnLambdaExecutor<TextChannel> executeOnChannel,
                                     LambdaExecutor.NoReturnLambdaExecutor<JDAEmbed> replyExecutor) {
-        Debugger.info("Creating ticket");
+        new TicketCreateEvent(guild, member, ticketType).fire();
         if (guild == null) {
             return;
         }

@@ -1,6 +1,6 @@
 package dev.lightdream.ticketsystem.manager;
 
-import dev.lightdream.ticketsystem.annotation.EventListener;
+import dev.lightdream.ticketsystem.annotation.EventHandler;
 import dev.lightdream.ticketsystem.event.TicketEvent;
 import dev.lightdream.ticketsystem.utils.ReflectionHelper;
 
@@ -49,19 +49,20 @@ public class EventManager {
         }
 
         public void register() {
-            ReflectionHelper.getMethodsAnnotatedWith(object.getClass(), EventListener.class).forEach(method -> {
+            ReflectionHelper.getMethodsAnnotatedWith(object.getClass(), EventHandler.class).forEach(method -> {
                 if (method.getParameters().length == 0) {
                     return;
                 }
 
                 Class<?> eventClassUnchecked = method.getParameters()[0].getType();
+                Class<? extends TicketEvent> eventClass;
 
-                if (!(eventClassUnchecked.isAssignableFrom(TicketEvent.class))) {
+                try {
+                    //noinspection unchecked
+                    eventClass = (Class<? extends TicketEvent>) eventClassUnchecked;
+                } catch (Exception e) {
                     return;
                 }
-
-                //noinspection unchecked
-                Class<? extends TicketEvent> eventClass = (Class<? extends TicketEvent>) eventClassUnchecked;
 
                 getEventMethod(eventClass).addMethod(method);
             });
@@ -69,19 +70,26 @@ public class EventManager {
 
         public EventMethod getEventMethod(Class<? extends TicketEvent> clazz) {
             for (EventMethod eventMethod : eventMethods) {
-                if (eventMethod.clazz == clazz) {
+                if (eventMethod.clazz.equals(clazz)) {
                     return eventMethod;
                 }
             }
 
-            //noinspection unchecked
-            EventMethod method = new EventMethod((Class<? extends TicketEvent>) object.getClass());
+            EventMethod method = new EventMethod(clazz);
             eventMethods.add(method);
             return method;
         }
 
         public void fire(TicketEvent event) {
             getEventMethod(event.getClass()).fire(object, event);
+        }
+
+        @Override
+        public String toString() {
+            return "EventMapper{" +
+                    "object=" + object +
+                    ", eventMethods=" + eventMethods +
+                    '}';
         }
     }
 
@@ -107,6 +115,14 @@ public class EventManager {
                     e.printStackTrace();
                 }
             }
+        }
+
+        @Override
+        public String toString() {
+            return "EventMethod{" +
+                    "clazz=" + clazz +
+                    ", methods=" + methods +
+                    '}';
         }
     }
 
