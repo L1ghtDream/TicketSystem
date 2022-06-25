@@ -6,6 +6,7 @@ import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
+import dev.lightdream.ticketsystem.event.TicketCreateEvent;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -63,7 +64,12 @@ public class DiscordEventManager extends ListenerAdapter {
                 return;
             }
 
-            TicketManager.createTicket(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, (textChannel) -> {
+            TicketCreateEvent createEvent = new TicketCreateEvent(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, event);
+            createEvent.fire();
+
+            TextChannel textChannel = createEvent.getTextChannel();
+
+            if (textChannel != null) {
                 String avatar = user.getAvatarUrl() == null ?
                         "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3" :
                         user.getAvatarUrl();
@@ -81,8 +87,8 @@ public class DiscordEventManager extends ListenerAdapter {
                 if (!ban.isApplicable()) {
                     ban.unban(textChannel);
                 }
+            }
 
-            }, embed -> event.replyEmbeds(embed.build().build()).setEphemeral(true).queue());
         } else if (id.equalsIgnoreCase("unban")) {
             Member member = event.getMember();
             TextChannel channel = event.getTextChannel();
@@ -109,7 +115,12 @@ public class DiscordEventManager extends ListenerAdapter {
 
                 Debugger.info("For loop instance");
 
-                TicketManager.createTicket(event.getGuild(), event.getMember(), ticketType, (textChannel) -> {
+                TicketCreateEvent createEvent = new TicketCreateEvent(event.getGuild(), event.getMember(), Main.instance.config.unbanTicket, event);
+                createEvent.fire();
+
+                TextChannel textChannel = createEvent.getTextChannel();
+
+                if (textChannel != null) {
                     User user = event.getUser();
 
                     String avatar = user.getAvatarUrl() == null ?
@@ -120,7 +131,7 @@ public class DiscordEventManager extends ListenerAdapter {
                             .parse("name", user.getName())
                             .parse("avatar", avatar)
                             .buildMessageAction(textChannel).queue();
-                }, embed -> event.replyEmbeds(embed.build().build()).setEphemeral(true).queue());
+                }
             });
         }
     }

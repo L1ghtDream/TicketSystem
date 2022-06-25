@@ -4,7 +4,17 @@ import dev.lightdream.ticketsystem.Main;
 
 public class TicketEvent {
 
-    public void fire(){
+    private boolean cancelled = false;
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void cancel() {
+        cancelled = true;
+    }
+
+    public void fire() {
         Main.instance.eventManager.fire(this);
     }
 
