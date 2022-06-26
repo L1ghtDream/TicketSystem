@@ -25,7 +25,7 @@ public class TicketEventManager {
 
     @EventHandler
     public void onTicketCreate(TicketCreateEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -36,9 +36,6 @@ public class TicketEventManager {
         switch (ticketType.handler) {
             case "unban":
                 checkBanTicketRequirements(event);
-                if (event.isCancelled()) {
-                    return;
-                }
                 generalTicketSetup(event);
                 completeTicketAsBan(event);
                 break;
@@ -54,7 +51,7 @@ public class TicketEventManager {
 
     @EventHandler
     public void onTicketClose(TicketCloseEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -64,6 +61,7 @@ public class TicketEventManager {
 
         if (ticket == null) {
             event.reply(Main.instance.jdaConfig.notTicket);
+            event.setCancelled(true);
             return;
         }
 
@@ -74,8 +72,8 @@ public class TicketEventManager {
     }
 
     @EventHandler
-    public void onManagerCall(TicketCallManagerEvent event){
-        if(event.isCancelled()){
+    public void onManagerCall(TicketCallManagerEvent event) {
+        if (event.isCancelled()) {
             return;
         }
 
@@ -83,6 +81,7 @@ public class TicketEventManager {
 
         Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
         if (ticket == null) {
+            event.setCancelled(true);
             return;
         }
 
@@ -90,6 +89,7 @@ public class TicketEventManager {
 
         if (ticket.pingedManager) {
             channel.sendMessageEmbeds(Main.instance.jdaConfig.alreadyPingedManager.build().build()).queue();
+            event.setCancelled(true);
             return;
         }
 
@@ -100,8 +100,8 @@ public class TicketEventManager {
     }
 
     @EventHandler
-    public void onTicketUnbanEvent(TicketUnbanEvent event){
-        if(event.isCancelled()){
+    public void onTicketUnbanEvent(TicketUnbanEvent event) {
+        if (event.isCancelled()) {
             return;
         }
 
@@ -111,6 +111,7 @@ public class TicketEventManager {
 
         if (member == null || !member.hasPermission(Permission.BAN_MEMBERS)) {
             event.reply(Main.instance.jdaConfig.notAllowed);
+            event.setCancelled(true);
             return;
         }
 
@@ -118,6 +119,7 @@ public class TicketEventManager {
 
         if (ticket == null) {
             event.reply(Main.instance.jdaConfig.error);
+            event.setCancelled(true);
             return;
         }
 
@@ -125,8 +127,8 @@ public class TicketEventManager {
     }
 
     @EventHandler
-    public void onUnban(UnbanEvent event){
-        if(event.isCancelled()){
+    public void onUnban(UnbanEvent event) {
+        if (event.isCancelled()) {
             return;
         }
 
@@ -136,6 +138,7 @@ public class TicketEventManager {
 
         if (ban == null) {
             event.reply(Main.instance.jdaConfig.notBanned);
+            event.setCancelled(true);
             return;
         }
 
@@ -147,7 +150,7 @@ public class TicketEventManager {
 
     @SneakyThrows
     private void generalTicketSetup(TicketCreateEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -233,7 +236,7 @@ public class TicketEventManager {
     }
 
     private void checkBanTicketRequirements(TicketCreateEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -249,7 +252,7 @@ public class TicketEventManager {
 
     @SuppressWarnings("ConstantConditions")
     private void completeTicketAsBan(TicketCreateEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -282,7 +285,7 @@ public class TicketEventManager {
     }
 
     private void completeTicketAsGeneral(TicketCreateEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -302,7 +305,7 @@ public class TicketEventManager {
     }
 
     private void closeTicket(TicketCloseEvent event) {
-        if(event.isCancelled()){
+        if (event.isCancelled()) {
             return;
         }
 
@@ -325,8 +328,8 @@ public class TicketEventManager {
         }, 5000);
     }
 
-    private void dialogueTicketSetup(TicketCreateEvent event){
-        if(event.isCancelled()){
+    private void dialogueTicketSetup(TicketCreateEvent event) {
+        if (event.isCancelled()) {
             return;
         }
     }
