@@ -1,28 +1,44 @@
 package dev.lightdream.ticketsystem.event.generic;
 
 import dev.lightdream.jdaextension.dto.JDAEmbed;
+import lombok.Getter;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 
 public abstract class InteractionTicketEvent extends TicketEvent {
 
-    private final IReplyCallback replyCallback;
+    @Getter
+    private final IReplyCallback interaction;
 
-    public InteractionTicketEvent(IReplyCallback replyCallback) {
-        this.replyCallback = replyCallback;
+    public InteractionTicketEvent(IReplyCallback interaction) {
+        this.interaction = interaction;
     }
 
     public void reply(JDAEmbed reply) {
-        if (replyCallback == null) {
+        if (interaction == null) {
             return;
         }
-        replyCallback.replyEmbeds(reply.build().build()).setEphemeral(true).queue();
+
+        if(interaction.isAcknowledged()){
+            interaction.getHook().editOriginalEmbeds(reply.build().build()).queue();
+            return;
+        }
+
+        interaction.replyEmbeds(reply.build().build()).setEphemeral(true).queue();
     }
 
     public void close() {
-        if (replyCallback == null || replyCallback.isAcknowledged()){
+        if (interaction == null || interaction.isAcknowledged()) {
             return;
         }
-        replyCallback.deferReply().setEphemeral(true).queue();
+        interaction.deferReply().setEphemeral(true).queue();
+    }
+
+    public Guild getGuild() {
+        if (interaction == null) {
+            return null;
+        }
+        return interaction.getGuild();
     }
 
 }

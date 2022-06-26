@@ -5,7 +5,7 @@ import dev.lightdream.jdaextension.dto.CommandArgument;
 import dev.lightdream.jdaextension.dto.context.GuildCommandContext;
 import dev.lightdream.jdaextension.dto.context.PrivateCommandContext;
 import dev.lightdream.ticketsystem.Main;
-import dev.lightdream.ticketsystem.manager.BanManager;
+import dev.lightdream.ticketsystem.event.UnbanEvent;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -23,7 +23,7 @@ public class UnbanCommand extends DiscordCommand {
     public void executeGuild(GuildCommandContext context) {
         User user = context.getArgument("user").getAsUser();
 
-        BanManager.unban(user.getIdLong(), context.getTextChannel());
+        new UnbanEvent(context.getEvent(), user.getIdLong()).fire();
     }
 
     @Override

@@ -7,14 +7,14 @@ import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.jdaextension.dto.context.CommandContext;
 import dev.lightdream.logger.Logger;
 import dev.lightdream.ticketsystem.Main;
+import dev.lightdream.ticketsystem.event.generic.InteractionTicketEvent;
 import dev.lightdream.ticketsystem.utils.Utils;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import lombok.SneakyThrows;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @DatabaseTable(table = "bans")
@@ -51,63 +51,71 @@ public class BanRecord extends IntegerDatabaseEntry {
         super(Main.instance);
     }
 
-    public boolean unban(TextChannel textChannel) {
+    @SneakyThrows
+    public boolean unban(InteractionTicketEvent event) {
         if (!active) {
             return false;
         }
 
-        Guild guild = textChannel.getGuild();
+        Guild guild = event.getGuild();
 
-        guild.retrieveMemberById(user)
-                .queue(member -> {
-                    Role bannedRole = guild.getRoleById(Main.instance.config.bannedRank);
+        if (guild == null) {
+            event.reply(Main.instance.jdaConfig.serverCommand);
+            return false;
+        }
 
-                    if (bannedRole != null) {
-                        guild.removeRoleFromMember(member, bannedRole).queue();
-                    } else {
-                        textChannel.sendMessageEmbeds(Main.instance.jdaConfig.invalidUser.build().build()).queue();
-                        return;
-                    }
+        CompletableFuture<Member> memberCF = guild.retrieveMemberById(user).submit();
+        Member member = memberCF.get();
+        Role bannedRole = guild.getRoleById(Main.instance.config.bannedRank);
 
-                    AtomicInteger roles1 = new AtomicInteger();
+        if (bannedRole != null) {
+            guild.removeRoleFromMember(member, bannedRole).queue();
+        } else {
+            event.reply(Main.instance.jdaConfig.invalidUser);
+            return false;
+        }
 
-                    ranks.forEach(rank -> {
-                        Role role = guild.getRoleById(rank);
+        AtomicInteger roles1 = new AtomicInteger();
 
-                        if (role == null) {
-                            Logger.error("Missing role " + role);
-                            return;
-                        }
+        ranks.forEach(rank -> {
+            Role role = guild.getRoleById(rank);
 
-                        try {
-                            guild.addRoleToMember(member, role).queue(s -> {
+            if (role == null) {
+                Logger.error("Missing role " + role);
+                return;
+            }
 
-                            }, e -> {
+            try {
+                guild.addRoleToMember(member, role).queue(s -> {
 
-                            });
-                        } catch (HierarchyException e) {
-                            textChannel.sendMessageEmbeds(Main.instance.jdaConfig.cannotUnban.build().build()).queue();
-                            return;
-                        }
+                }, e -> {
 
-                        roles1.getAndIncrement();
-                    });
-
-                    textChannel.sendMessageEmbeds(Main.instance.jdaConfig.unBanned
-                            .parse("name", member.getEffectiveName())
-                            .parse("roles_1", String.valueOf(roles1.get()))
-                            .parse("roles_2", String.valueOf(ranks.size()))
-                            .build().build()
-                    ).queue();
                 });
+            } catch (HierarchyException e) {
+                event.reply(Main.instance.jdaConfig.cannotUnban);
+                return;
+            }
 
-        active = false;
-        save();
+            roles1.getAndIncrement();
+        });
+
+        event.reply(Main.instance.jdaConfig.unBanned
+                .parse("name", member.getEffectiveName())
+                .parse("roles_1", String.valueOf(roles1.get()))
+                .parse("roles_2", String.valueOf(ranks.size()))
+        );
+
+        setActive(false);
         return true;
     }
 
+    public void setActive(boolean active) {
+        this.active = active;
+        save();
+    }
+
     public boolean isApplicable() {
-        if(duration == 0) {
+        if (duration == 0) {
             return true;
         }
         return System.currentTimeMillis() <= timestamp + duration;

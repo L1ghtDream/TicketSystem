@@ -8,11 +8,10 @@ import dev.lightdream.ticketsystem.dto.TicketType;
 import dev.lightdream.ticketsystem.event.TicketCallManagerEvent;
 import dev.lightdream.ticketsystem.event.TicketCloseEvent;
 import dev.lightdream.ticketsystem.event.TicketCreateEvent;
-import net.dv8tion.jda.api.Permission;
+import dev.lightdream.ticketsystem.event.TicketUnbanEvent;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -42,23 +41,7 @@ public class DiscordEventManager extends ListenerAdapter {
             return;
         }
         if (id.equalsIgnoreCase("unban")) {
-            Member member = event.getMember();
-            TextChannel channel = event.getTextChannel();
-
-            if (member == null || !member.hasPermission(Permission.BAN_MEMBERS)) {
-                channel.sendMessageEmbeds(Main.instance.jdaConfig.notAllowed.build().build()).queue();
-                return;
-            }
-
-            Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
-
-            if (ticket == null) {
-                channel.sendMessageEmbeds(Main.instance.jdaConfig.error.build().build()).queue();
-                return;
-            }
-
-            BanManager.unban(ticket.creatorID, channel);
-            event.deferEdit().queue();
+            new TicketUnbanEvent(event, event.getMember()).fire();
             return;
         }
 

@@ -6,9 +6,7 @@ import dev.lightdream.ticketsystem.database.BanRecord;
 import dev.lightdream.ticketsystem.database.BlacklistRecord;
 import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.dto.TicketType;
-import dev.lightdream.ticketsystem.event.TicketCallManagerEvent;
-import dev.lightdream.ticketsystem.event.TicketCloseEvent;
-import dev.lightdream.ticketsystem.event.TicketCreateEvent;
+import dev.lightdream.ticketsystem.event.*;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -106,6 +104,52 @@ public class TicketEventManager {
 
         ticket.setPingedManager(true);
     }
+
+    @EventHandler
+    public void onTicketUnbanEvent(TicketUnbanEvent event){
+        if(event.isCancelled()){
+            return;
+        }
+
+        Member member = event.getMember();
+        TextChannel channel = event.getTextChannel();
+        event.close();
+
+        if (member == null || !member.hasPermission(Permission.BAN_MEMBERS)) {
+            event.reply(Main.instance.jdaConfig.notAllowed);
+            return;
+        }
+
+        Ticket ticket = Main.instance.databaseManager.getTicket(channel.getIdLong());
+
+        if (ticket == null) {
+            event.reply(Main.instance.jdaConfig.error);
+            return;
+        }
+
+        new UnbanEvent(event.getInteraction(), ticket.creatorID).fire();
+    }
+
+    @EventHandler
+    public void onUnban(UnbanEvent event){
+        if(event.isCancelled()){
+            return;
+        }
+
+        Long bannedID = event.getBannedID();
+
+        BanRecord ban = Main.instance.databaseManager.getBan(bannedID);
+
+        if (ban == null) {
+            event.reply(Main.instance.jdaConfig.notBanned);
+            return;
+        }
+
+        if (!ban.unban(event)) {
+            event.reply(Main.instance.jdaConfig.notBanned);
+        }
+    }
+
 
     @SneakyThrows
     private void generalTicketSetup(TicketCreateEvent event) {
@@ -215,7 +259,7 @@ public class TicketEventManager {
         });
 
         if (!ban.isApplicable()) {
-            ban.unban(textChannel);
+            ban.unban(event);
         }
     }
 
