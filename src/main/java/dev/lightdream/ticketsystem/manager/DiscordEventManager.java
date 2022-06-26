@@ -41,7 +41,7 @@ public class DiscordEventManager extends ListenerAdapter {
             return;
         }
         if (id.equalsIgnoreCase("unban")) {
-            new TicketUnbanEvent(event, event.getMember()).fire();
+            new TicketUnbanEvent(event, event.getMember(), event.getTextChannel()).fire();
             return;
         }
 
@@ -82,7 +82,6 @@ public class DiscordEventManager extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-
         BanRecord banRecord = Main.instance.databaseManager.getBan(event.getMember().getIdLong());
         if (banRecord == null) {
             return;

@@ -1,5 +1,6 @@
 package dev.lightdream.ticketsystem.manager;
 
+import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.annotation.EventHandler;
 import dev.lightdream.ticketsystem.database.BanRecord;
@@ -30,26 +31,19 @@ public class TicketEventManager {
 
         TicketType ticketType = event.getType();
 
+        Debugger.log(ticketType.handler);
+
         switch (ticketType.handler) {
             case "unban":
                 checkBanTicketRequirements(event);
                 if (event.isCancelled()) {
                     return;
                 }
-                break;
-            case "general":
-                break;
-            case "dialogue":
-                break;
-        }
-
-        generalTicketSetup(event);
-
-        switch (ticketType.handler) {
-            case "unban":
+                generalTicketSetup(event);
                 completeTicketAsBan(event);
                 break;
             case "general":
+                generalTicketSetup(event);
                 completeTicketAsGeneral(event);
                 break;
             case "dialogue":
@@ -153,17 +147,25 @@ public class TicketEventManager {
 
     @SneakyThrows
     private void generalTicketSetup(TicketCreateEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
+
         Guild guild = event.getGuild();
         Member member = event.getMember();
         TicketType ticketType = event.getType();
 
         if (guild == null) {
+            Debugger.log("[1] #setCanceled");
+            event.setCancelled(true);
             return;
         }
 
         Category category = guild.getCategoryById(ticketType.categoryID);
 
         if (category == null || member == null) {
+            Debugger.log("[2] #setCanceled");
+            event.setCancelled(true);
             return;
         }
 
@@ -171,6 +173,8 @@ public class TicketEventManager {
 
         if (blacklistRecord != null) {
             event.reply(Main.instance.jdaConfig.blacklisted);
+            Debugger.log("[3] #setCanceled");
+            event.setCancelled(true);
             return;
         }
 
@@ -194,6 +198,8 @@ public class TicketEventManager {
                     .queue(message -> message.delete().queue());
 
             event.reply(Main.instance.jdaConfig.alreadyHaveTicket);
+            Debugger.log("[4] #setCanceled");
+            event.setCancelled(true);
             return;
         }
 
@@ -222,14 +228,20 @@ public class TicketEventManager {
         new Ticket(ticketType.id, textChannel.getIdLong(), member.getIdLong()).save();
 
         event.reply(Main.instance.jdaConfig.ticketCreated);
+        Debugger.log("Setting textChannel to " + textChannel);
         event.setTextChannel(textChannel);
     }
 
     private void checkBanTicketRequirements(TicketCreateEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
+
         User user = event.getMember().getUser();
         BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
 
         if (ban == null) {
+            Debugger.log("[5] #setCanceled");
             event.reply(Main.instance.jdaConfig.notBanned);
             event.setCancelled(true);
         }
@@ -237,6 +249,10 @@ public class TicketEventManager {
 
     @SuppressWarnings("ConstantConditions")
     private void completeTicketAsBan(TicketCreateEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
+
         User user = event.getMember().getUser();
         TextChannel textChannel = event.getTextChannel();
         BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
@@ -246,6 +262,8 @@ public class TicketEventManager {
         if (avatar == null) {
             avatar = "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3";
         }
+
+        Debugger.log("TextChannel: " + textChannel);
 
         Main.instance.jdaConfig.unbanTicketGreeting
                 .parse("name", user.getName())
@@ -264,6 +282,10 @@ public class TicketEventManager {
     }
 
     private void completeTicketAsGeneral(TicketCreateEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
+
         TextChannel textChannel = event.getTextChannel();
 
         User user = event.getMember().getUser();
@@ -280,6 +302,10 @@ public class TicketEventManager {
     }
 
     private void closeTicket(TicketCloseEvent event) {
+        if(event.isCancelled()){
+            return;
+        }
+
         Ticket ticket = event.getTicket();
         User user = event.getUser();
         TextChannel textChannel = event.getTextChannel();
@@ -297,6 +323,12 @@ public class TicketEventManager {
                 ));
             }
         }, 5000);
+    }
+
+    private void dialogueTicketSetup(TicketCreateEvent event){
+        if(event.isCancelled()){
+            return;
+        }
     }
 
 

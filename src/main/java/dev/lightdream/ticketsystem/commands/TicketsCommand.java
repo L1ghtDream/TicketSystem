@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.List;
 
 public class TicketsCommand extends DiscordCommand {
+
+    //TODO give perms to view your own tickets
     public TicketsCommand() {
         super(Main.instance, "tickets", Main.instance.lang.ticketsCommandDescription, Permission.ADMINISTRATOR, true, Collections.singletonList(
                 new CommandArgument(OptionType.USER, "user", Main.instance.lang.userIDDescription, true)
