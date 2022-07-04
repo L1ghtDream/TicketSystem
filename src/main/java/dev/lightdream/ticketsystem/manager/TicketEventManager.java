@@ -1,5 +1,6 @@
 package dev.lightdream.ticketsystem.manager;
 
+import dev.lightdream.jdaextension.dto.JDAEmbed;
 import dev.lightdream.logger.Debugger;
 import dev.lightdream.ticketsystem.Main;
 import dev.lightdream.ticketsystem.annotation.EventHandler;
@@ -36,14 +37,16 @@ public class TicketEventManager {
         switch (ticketType.handler) {
             case "unban":
                 checkBanTicketRequirements(event);
-                generalTicketSetup(event);
+                checkGeneralRequirements(event);
                 completeTicketAsBan(event);
                 break;
             case "general":
-                generalTicketSetup(event);
+                checkGeneralRequirements(event);
                 completeTicketAsGeneral(event);
                 break;
             case "dialogue":
+                checkGeneralRequirements(event);
+                completeTicketAsDialogue(event);
                 break;
         }
 
@@ -147,9 +150,8 @@ public class TicketEventManager {
         }
     }
 
-
     @SneakyThrows
-    private void generalTicketSetup(TicketCreateEvent event) {
+    private void checkGeneralRequirements(TicketCreateEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -231,7 +233,6 @@ public class TicketEventManager {
         new Ticket(ticketType.id, textChannel.getIdLong(), member.getIdLong()).save();
 
         event.reply(Main.instance.jdaConfig.ticketCreated);
-        Debugger.log("Setting textChannel to " + textChannel);
         event.setTextChannel(textChannel);
     }
 
@@ -260,18 +261,7 @@ public class TicketEventManager {
         TextChannel textChannel = event.getTextChannel();
         BanRecord ban = Main.instance.databaseManager.getBan(user.getIdLong());
 
-        String avatar = user.getAvatarUrl();
-
-        if (avatar == null) {
-            avatar = "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3";
-        }
-
-        Debugger.log("TextChannel: " + textChannel);
-
-        Main.instance.jdaConfig.unbanTicketGreeting
-                .parse("name", user.getName())
-                .parse("avatar", avatar)
-                .buildMessageAction(textChannel).queue();
+        sendGreetingMessage(Main.instance.jdaConfig.unbanTicketGreeting, user, textChannel);
 
         ban.sendBanDetails(textChannel);
 
@@ -289,17 +279,19 @@ public class TicketEventManager {
             return;
         }
 
+        User user = event.getMember().getUser();
         TextChannel textChannel = event.getTextChannel();
 
-        User user = event.getMember().getUser();
+        sendGreetingMessage(Main.instance.jdaConfig.ticketGreeting, user, textChannel);
+    }
 
+    private void sendGreetingMessage(JDAEmbed embed, User user, TextChannel textChannel) {
         String avatar = user.getAvatarUrl();
         if (avatar == null) {
             avatar = "https://external-preview.redd.it/4PE-nlL_PdMD5PrFNLnjurHQ1QKPnCvg368LTDnfM-M.png?auto=webp&s=ff4c3fbc1cce1a1856cff36b5d2a40a6d02cc1c3";
         }
 
-        Main.instance.jdaConfig.ticketGreeting
-                .parse("name", user.getName())
+        embed.parse("name", user.getName())
                 .parse("avatar", avatar)
                 .buildMessageAction(textChannel).queue();
     }
@@ -328,11 +320,25 @@ public class TicketEventManager {
         }, 5000);
     }
 
-    private void dialogueTicketSetup(TicketCreateEvent event) {
+    private void completeTicketAsDialogue(TicketCreateEvent event) {
         if (event.isCancelled()) {
             return;
         }
+
+        User user = event.getMember().getUser();
+        TextChannel textChannel = event.getTextChannel();
+
+        sendGreetingMessage(Main.instance.jdaConfig.dialogueGreeting, user, textChannel);
+        sendDialogueLine(textChannel);
     }
 
+    private void sendDialogueLine(TextChannel textChannel) {
+        Ticket ticket = Main.instance.databaseManager.getTicket(textChannel.getIdLong());
+        if (ticket == null) {
+            Debugger.log("Ticket is null");
+            return;
+        }
+        ticket.sendNextDialogueLine();
+    }
 
 }

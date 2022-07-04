@@ -52,7 +52,6 @@ public class DiscordEventManager extends ListenerAdapter {
         }
 
         new TicketCreateEvent(event.getGuild(), event.getMember(), type, event).fire();
-
     }
 
     @Override
@@ -61,22 +60,22 @@ public class DiscordEventManager extends ListenerAdapter {
             return;
         }
 
-        try {
-            TicketType ticketType = Main.instance.config.getTicketTypeByCategoryID(event.getTextChannel().getParentCategoryIdLong());
+        TicketType ticketType = Main.instance.config.getTicketTypeByCategoryID(event.getTextChannel().getParentCategoryIdLong());
 
-            if (ticketType == null) {
-                return;
-            }
+        if (ticketType == null) {
+            return;
+        }
 
-            Ticket ticket = Main.instance.databaseManager.getTicket(event.getChannel().getIdLong());
+        Ticket ticket = Main.instance.databaseManager.getTicket(event.getChannel().getIdLong());
 
-            if (ticket == null) {
-                return;
-            }
+        if (ticket == null) {
+            return;
+        }
 
-            ticket.getTranscript().record(event.getAuthor(), event.getMessage().getContentRaw());
-        } catch (Throwable t) {
-            //Empty
+        ticket.getTranscript().record(event.getAuthor(), event.getMessage().getContentRaw());
+
+        if(ticketType.handler.equals("dialogue")){
+            Main.instance.dialogueManager.onDialogueMessageReceive(ticket, event.getMessage());
         }
     }
 

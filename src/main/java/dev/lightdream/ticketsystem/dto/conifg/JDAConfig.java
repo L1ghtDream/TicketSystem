@@ -259,4 +259,26 @@ public class JDAConfig extends dev.lightdream.jdaextension.dto.JDAConfig {
             "The duration is invalid. Please use the format a duration of type [amount]m or [amount]h or [amount]d."
     );
 
+    public JDAEmbed dialogueGreeting = new JDAEmbed(
+            0,
+            255,
+            0,
+            "%name%",
+            "%avatar%",
+            "A staff member will answer after you respond to some questions.\n" +
+                    "Please respond to each question!",
+            new ArrayList<>(),
+            Arrays.asList(new JDAButton(JDAButtonType.PRIMARY, "close-ticket", "\uD83D\uDD12 Close ticket"))
+    );
+
+    public JDAEmbed dialogueLine = JDAEmbed.black(
+            "Question %number%",
+            "%question%"
+    );
+
+    public JDAEmbed dialogueEnd = JDAEmbed.black(
+            "Results",
+            ""
+    );
+
 }

@@ -45,6 +45,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
     public ScheduleManager scheduleManager;
     public EventManager eventManager;
     public TicketEventManager ticketEventManager;
+    public TicketDialogueManager dialogueManager;
 
     // Others
     public JDA bot;
@@ -65,6 +66,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         databaseManager = new DatabaseManager(this);
         eventManager = new EventManager();
         ticketEventManager = new TicketEventManager();
+        dialogueManager=new TicketDialogueManager();
 
         bot = security.getBot();
 
