@@ -16,4 +16,17 @@ public interface ISecurity {
         return null;
     }
 
+    /**
+     * @param bannedBy  The user who banned the user
+     * @param reason    reason
+     * @param duration  in ms, 0 for permanent
+     */
+    default void banUser(Long user, Long bannedBy, String reason, Long duration) {
+
+    }
+
+    default void unbanUser(Long user) {
+
+    }
+
 }

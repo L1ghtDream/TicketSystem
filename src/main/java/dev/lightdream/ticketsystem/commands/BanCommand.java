@@ -54,6 +54,9 @@ public class BanCommand extends DiscordCommand {
                 }
 
                 switch (unit) {
+                    case "s":
+                        output *= 1000;
+                        break;
                     case "m":
                         output *= 1000 * 60;
                         break;

@@ -35,6 +35,14 @@ public class BanRecord extends IntegerDatabaseEntry {
     @DatabaseField(columnName = "duration")
     public Long duration; //0 for permanent
 
+    /**
+     * @param user      The user to ban
+     * @param bannedBy  The user who banned the user
+     * @param ranks     The ranks that the user had before being banned.
+     * @param reason    reason
+     * @param timestamp JAVA time
+     * @param duration  time in ms, 0 for permanent
+     */
     public BanRecord(Long user, Long bannedBy, List<Long> ranks, String reason, Long timestamp, Long duration) {
         super(Main.instance);
         this.user = user;
@@ -44,6 +52,8 @@ public class BanRecord extends IntegerDatabaseEntry {
         this.timestamp = timestamp;
         this.active = true;
         this.duration = duration;
+
+        Main.security.banUser(user, bannedBy, reason, duration);
     }
 
     @SuppressWarnings("unused")
@@ -106,6 +116,7 @@ public class BanRecord extends IntegerDatabaseEntry {
         );
 
         setActive(false);
+        Main.security.unbanUser(user);
         return true;
     }
 
