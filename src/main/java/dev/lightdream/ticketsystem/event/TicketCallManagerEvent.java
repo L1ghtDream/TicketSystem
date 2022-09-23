@@ -5,8 +5,6 @@ import dev.lightdream.ticketsystem.database.Ticket;
 import dev.lightdream.ticketsystem.event.generic.InteractionTicketEvent;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
 
 public class TicketCallManagerEvent extends InteractionTicketEvent {

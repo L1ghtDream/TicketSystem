@@ -74,7 +74,7 @@ public class DiscordEventManager extends ListenerAdapter {
 
         ticket.getTranscript().record(event.getAuthor(), event.getMessage().getContentRaw());
 
-        if(ticketType.handler.equals("dialogue")){
+        if (ticketType.handler.equals("dialogue")) {
             Main.instance.dialogueManager.onDialogueMessageReceive(ticket, event.getMessage());
         }
     }

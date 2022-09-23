@@ -66,7 +66,7 @@ public class Main implements DatabaseMain, LoggableMain, FileManagerMain, JDAExt
         databaseManager = new DatabaseManager(this);
         eventManager = new EventManager();
         ticketEventManager = new TicketEventManager();
-        dialogueManager=new TicketDialogueManager();
+        dialogueManager = new TicketDialogueManager();
 
         bot = security.getBot();
 

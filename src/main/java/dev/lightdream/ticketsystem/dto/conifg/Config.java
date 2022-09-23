@@ -19,51 +19,51 @@ public class Config {
             new TicketGroup(
                     0L,
                     Arrays.asList(
-                            new TicketType("\uD83D\uDCDC General", "general", 0L, "general",new ArrayList<>()),
-                            new TicketType("\uD83C\uDFC6 Tops", "tops", 0L,"general", new ArrayList<>()),
-                            new TicketType("\uD83D\uDCB0 Donations", "donations", 0L, "general",new ArrayList<>()),
-                            new TicketType("\uD83D\uDD12 Lost Passwords", "lost-passwords", 0L, "general",new ArrayList<>()),
-                            new TicketType(":CFbug: Report a Bug", "bug", 0L, "dialogue",new ArrayList<>(), Arrays.asList(
+                            new TicketType("\uD83D\uDCDC General", "general", 0L, "general", new ArrayList<>()),
+                            new TicketType("\uD83C\uDFC6 Tops", "tops", 0L, "general", new ArrayList<>()),
+                            new TicketType("\uD83D\uDCB0 Donations", "donations", 0L, "general", new ArrayList<>()),
+                            new TicketType("\uD83D\uDD12 Lost Passwords", "lost-passwords", 0L, "general", new ArrayList<>()),
+                            new TicketType(":CFbug: Report a Bug", "bug", 0L, "dialogue", new ArrayList<>(), Arrays.asList(
                                     "Please give a brief description of the bug.",
                                     "Where does it happen?",
                                     "What is the expected behaviour?",
                                     "What is the actual behaviour?",
                                     "What are the steps to reproduce the bug? (video/screenshot)"
                             )),
-                            new TicketType("❗ File a Complain", "complain", 0L, "dialogue",new ArrayList<>(), Arrays.asList(
+                            new TicketType("❗ File a Complain", "complain", 0L, "dialogue", new ArrayList<>(), Arrays.asList(
                                     "Please give a brief description of the complaint.",
                                     "Who you are complaining against?",
                                     "What is the rank of the person who you are complaining against?",
                                     "Any proof to support the complaint? (video/screenshot)"
                             )),
-                            new TicketType("\uD83D\uDC6E\u200D♂️ Apply", "apply", 0L, "dialogue",new ArrayList<>(), Arrays.asList(
-"options~~~option~~~discord-staff,tiktoker,youtuber,developer|||What is the position you are applying for? (open positions are: discord-staff, tiktoker, youtuber, developer)",
-"How old are you?",
+                            new TicketType("\uD83D\uDC6E\u200D♂️ Apply", "apply", 0L, "dialogue", new ArrayList<>(), Arrays.asList(
+                                    "options~~~option~~~discord-staff,tiktoker,youtuber,developer|||What is the position you are applying for? (open positions are: discord-staff, tiktoker, youtuber, developer)",
+                                    "How old are you?",
 
-"option~~~discord-staff|||Please give a brief description of the reasons you should be accepted.",
+                                    "option~~~discord-staff|||Please give a brief description of the reasons you should be accepted.",
 
-"option~~~youtuber|||How many subscribers do you have? (at minimum x)",
-"option~~~youtuber|||How many videos you have on our network? (at minimum x)",
-"option~~~youtuber|||How many views have you tantalized on our network? (at minimum x)",
-"option~~~youtuber|||Why are you interested in recording videos specifically on our server?",
-"option~~~youtuber|||What's your average engagement rate for a video? (views, likes)",
-"option~~~youtuber|||Do you seek monetary compensation for your videos?",
-"option~~~youtuber|||What type of videos do you normally record?",
-"option~~~youtuber|||What do you hope to achieve as a youtuber on our server?",
-"option~~~youtuber|||Link your channel.",
+                                    "option~~~youtuber|||How many subscribers do you have? (at minimum x)",
+                                    "option~~~youtuber|||How many videos you have on our network? (at minimum x)",
+                                    "option~~~youtuber|||How many views have you tantalized on our network? (at minimum x)",
+                                    "option~~~youtuber|||Why are you interested in recording videos specifically on our server?",
+                                    "option~~~youtuber|||What's your average engagement rate for a video? (views, likes)",
+                                    "option~~~youtuber|||Do you seek monetary compensation for your videos?",
+                                    "option~~~youtuber|||What type of videos do you normally record?",
+                                    "option~~~youtuber|||What do you hope to achieve as a youtuber on our server?",
+                                    "option~~~youtuber|||Link your channel.",
 
-"option~~~tiktoker|||How many followers do you have? (at minimum x)",
-"option~~~tiktoker|||How many videos you have on our network? (at minimum x)",
-"option~~~tiktoker|||How many views have you tantalized on our network? (at minimum x)",
-"option~~~tiktoker|||Why are you interested in recording videos specifically on our server?",
-"option~~~tiktoker|||What's your average engagement rate for a video? (views, likes)",
-"option~~~tiktoker|||Do you seek monetary compensation for your videos?",
-"option~~~tiktoker|||What type of videos do you normally record?",
-"option~~~tiktoker|||What do you hope to achieve as a youtuber on our server?",
-"option~~~tiktoker|||Link your channel.",
+                                    "option~~~tiktoker|||How many followers do you have? (at minimum x)",
+                                    "option~~~tiktoker|||How many videos you have on our network? (at minimum x)",
+                                    "option~~~tiktoker|||How many views have you tantalized on our network? (at minimum x)",
+                                    "option~~~tiktoker|||Why are you interested in recording videos specifically on our server?",
+                                    "option~~~tiktoker|||What's your average engagement rate for a video? (views, likes)",
+                                    "option~~~tiktoker|||Do you seek monetary compensation for your videos?",
+                                    "option~~~tiktoker|||What type of videos do you normally record?",
+                                    "option~~~tiktoker|||What do you hope to achieve as a youtuber on our server?",
+                                    "option~~~tiktoker|||Link your channel.",
 
-"option~~~developer|||What is your experience? (mainly in Java and frameworks that have to do with minecraft)",
-"option~~~developer|||Link to your portfolio."
+                                    "option~~~developer|||What is your experience? (mainly in Java and frameworks that have to do with minecraft)",
+                                    "option~~~developer|||Link to your portfolio."
                             ))
                     ),
                     JDAEmbed.black(
@@ -80,7 +80,7 @@ public class Config {
             new TicketGroup(
                     0L,
                     Arrays.asList(
-                            new TicketType("\uD83D\uDD13 Unban Request", "unban-request", 0L,"unban", new ArrayList<>())
+                            new TicketType("\uD83D\uDD13 Unban Request", "unban-request", 0L, "unban", new ArrayList<>())
                     ),
                     JDAEmbed.black(
                             "Create Unban Ticket",

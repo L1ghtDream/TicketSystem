@@ -2,7 +2,6 @@ package dev.lightdream.ticketsystem.dto.conifg;
 
 import dev.lightdream.jdaextension.dto.JDAButton;
 import dev.lightdream.jdaextension.dto.JDAEmbed;
-import dev.lightdream.jdaextension.dto.JDAField;
 import dev.lightdream.jdaextension.enums.JDAButtonType;
 
 import java.util.ArrayList;

@@ -19,7 +19,7 @@ public abstract class InteractionTicketEvent extends TicketEvent {
             return;
         }
 
-        if(interaction.isAcknowledged()){
+        if (interaction.isAcknowledged()) {
             interaction.getHook().editOriginalEmbeds(reply.build().build()).queue();
             return;
         }

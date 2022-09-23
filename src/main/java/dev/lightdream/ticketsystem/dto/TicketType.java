@@ -27,10 +27,10 @@ public class TicketType {
         this.categoryID = categoryID;
         this.associatedRanks = associatedRanks;
         this.questions = questions;
-        this.handler=handler;
+        this.handler = handler;
     }
 
-    public TicketType(String name, String id, Long categoryID, String handler,List<Long> associatedRanks) {
-        this(name, id, categoryID, handler,associatedRanks,  new ArrayList<>());
+    public TicketType(String name, String id, Long categoryID, String handler, List<Long> associatedRanks) {
+        this(name, id, categoryID, handler, associatedRanks, new ArrayList<>());
     }
 }
