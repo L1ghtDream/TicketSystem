@@ -20,7 +20,7 @@
     <repositories>
         <repository>
             <id>lightdream</id>
-            <url>https://repo.lightdream.dev/repository/LightDream-API/</url>
+            <url>https://repo.lightdream.dev/</url>
         </repository>
     </repositories>
 
